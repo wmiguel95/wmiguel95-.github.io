@@ -12,22 +12,13 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6; /* Fundo cinza claro */
         }
-        /* Barra de rolagem personalizada para melhor estética */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #e0e0e0;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #888;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #555;
-        }
-        /* Estilos personalizados para efeitos de hover dos botões */
+        /* Barra de rolagem personalizada */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #e0e0e0; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb { background: #888; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
+        /* Efeitos de hover dos botões */
         .btn-primary {
             transition: background-color 0.3s ease, transform 0.2s ease;
         }
@@ -35,35 +26,25 @@
             background-color: #ef4444; /* Vermelho mais escuro no hover */
             transform: translateY(-2px);
         }
-        .product-card {
+        .product-card, .category-card {
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-            cursor: pointer; /* Indica que o card é clicável */
+            cursor: pointer;
         }
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
-        .category-card {
-            transition: transform 0.2s ease-in-out;
-            cursor: pointer; /* Indica que o card é clicável */
-        }
         .category-card:hover {
             transform: scale(1.03);
         }
-        /* Overlay do modal */
         .modal-overlay {
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 999;
         }
-        /* Ocultar barra de rolagem para elementos específicos, mas geralmente evitar por acessibilidade */
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-        .no-scrollbar {
-            -ms-overflow-style: none;  /* IE e Edge */
-            scrollbar-width: none;  /* Firefox */
-        }
-        /* Estilo para o spinner de carregamento */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Spinner de carregamento */
         .spinner {
             border: 4px solid rgba(0, 0, 0, 0.1);
             border-left-color: #ef4444;
@@ -75,6 +56,25 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        /* Estilos para o Carrossel de Banners */
+        .hero-slide {
+            transition: opacity 1s ease-in-out, transform 0.5s ease-out;
+        }
+        .hero-dot {
+            transition: background-color 0.3s ease;
+        }
+
+        /* Estilos para Animação de Scroll */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+        }
+        .animate-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -82,8 +82,8 @@
     <header class="bg-gray-900 text-white p-4 shadow-md sticky top-0 z-50">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
             <a href="#" class="mb-4 md:mb-0 flex items-center" id="home-logo">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdExMGGQ4doX1rx39Tbs0pR5bAM1aAalCeGw&s" 
-                     alt="GadgetX Logo" 
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdExMGGQ4doX1rx39Tbs0pR5bAM1aAalCeGw&s"
+                     alt="GadgetX Logo"
                      class="h-8 md:h-10 mr-2"
                      onerror="this.onerror=null;this.src='https://placehold.co/100x40/FF0000/FFFFFF?text=GadgetX'; this.alt='GadgetX Texto'">
                 <span class="text-3xl font-bold text-red-500">GadgetX</span>
@@ -116,81 +116,106 @@
             <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Placas-Mãe">Placas-Mãe</a>
             <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Armazenamento">Armazenamento</a>
             <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Gabinetes">Gabinetes</a>
-            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Fontes">Fontes</a>
-            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Periféricos">Periféricos</a>
-            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Monitores">Monitores</a>
-            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Mouses">Mouses</a>
         </nav>
     </header>
 
     <main class="flex-grow">
         <div class="max-w-screen-xl mx-auto px-4 py-8">
-            <section class="mb-8 rounded-lg overflow-hidden shadow-lg">
-                <div class="relative bg-gradient-to-r from-red-600 to-red-800 h-64 md:h-96 flex items-center justify-center">
-                    <img src="https://sdmntprwestus3.oaiusercontent.com/files/00000000-d5f8-61fd-9167-91358b13b587/raw?se=2025-05-29T16%3A49%3A44Z&sp=r&sv=2024-08-04&sr=b&scid=ebeef2ab-3826-5818-8389-21b003a520c1&skoid=864daabb-d06a-46b3-a747-d35075313a83&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T07%3A52%3A35Z&ske=2025-05-30T07%3A52%3A35Z&sks=b&skv=2024-08-04&sig=DY/PqNreKYlgBWJpDiTv20TqcQ89c%2B3BgqT4PL4LdvQ%3D" 
-                         alt="Monte o Seu PC Gaming! e Mais" 
-                         class="absolute inset-0 w-full h-full object-cover opacity-100"
-                         onerror="this.onerror=null;this.src='https://placehold.co/1200x400/000000/FFFFFF?text=SUPER+OFERTA!+Até+50%25+OFF'; this.alt='Super Oferta'">
-                    <div class="relative z-10 text-center text-white p-4">
-                        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">Monte o Seu PC Gaming!</h1>
-                        <p class="text-lg md:text-2xl mb-6">As melhores peças com os menores preços. Aproveite!</p>
-                        <button class="bg-white text-red-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-200 transform hover:scale-105 transition duration-300">
-                            Ver Ofertas
-                        </button>
+            <section id="hero-banner-section" class="relative w-full h-64 md:h-96 mb-12 rounded-lg overflow-hidden shadow-2xl group">
+                <div id="hero-slides-container" class="relative w-full h-full">
+                    <div class="hero-slide absolute inset-0 w-full h-full opacity-100" data-slide-index="0">
+                        <img src="https://sdmntprwestus3.oaiusercontent.com/files/00000000-d5f8-61fd-9167-91358b13b587/raw?se=2025-05-29T16%3A49%3A44Z&sp=r&sv=2024-08-04&sr=b&scid=ebeef2ab-3826-5818-8389-21b003a520c1&skoid=864daabb-d06a-46b3-a747-d35075313a83&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T07%3A52%3A35Z&ske=2025-05-30T07%3A52%3A35Z&sks=b&skv=2024-08-04&sig=DY/PqNreKYlgBWJpDiTv20TqcQ89c%2B3BgqT4PL4LdvQ%3D"
+                             alt="Monte o Seu PC Gaming!"
+                             class="absolute inset-0 w-full h-full object-cover"
+                             onerror="this.onerror=null;this.src='https://placehold.co/1200x480/111827/FFFFFF?text=PC+Gaming+Dreams'; this.alt='PC Gaming Dreams'">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+                        <div class="relative z-10 flex flex-col items-center justify-end h-full text-center text-white p-8 md:p-12">
+                            <h1 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">Monte o Seu PC Gaming!</h1>
+                            <p class="text-lg md:text-2xl mb-6 drop-shadow-md">As melhores peças com os menores preços. Aproveite!</p>
+                            <button class="bg-red-600 text-white font-bold py-3 px-8 rounded-full shadow-xl hover:bg-red-700 transform hover:scale-105 transition duration-300 hero-cta-button" data-target-section="all-products-section">
+                                Ver Todas as Ofertas
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-slide absolute inset-0 w-full h-full opacity-0" data-slide-index="1">
+                        <img src="https://placehold.co/1200x480/059669/FFFFFF?text=Novas+GPUs+Chegaram!"
+                             alt="Novas Placas de Vídeo"
+                             class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+                        <div class="relative z-10 flex flex-col items-center justify-end h-full text-center text-white p-8 md:p-12">
+                            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">Placas de Vídeo de Última Geração</h1>
+                            <p class="text-lg md:text-xl mb-6 drop-shadow-md">Desempenho gráfico que redefine seus jogos.</p>
+                            <button class="bg-green-600 text-white font-bold py-3 px-8 rounded-full shadow-xl hover:bg-green-700 transform hover:scale-105 transition duration-300 category-link" data-category="Placas de Vídeo">
+                                Explorar Placas de Vídeo
+                            </button>
+                        </div>
+                    </div>
+                     <div class="hero-slide absolute inset-0 w-full h-full opacity-0" data-slide-index="2">
+                        <img src="https://placehold.co/1200x480/3B82F6/FFFFFF?text=Promo+Periféricos"
+                             alt="Promoção Periféricos"
+                             class="absolute inset-0 w-full h-full object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
+                        <div class="relative z-10 flex flex-col items-center justify-end h-full text-center text-white p-8 md:p-12">
+                            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">Eleve seu Setup com Periféricos!</h1>
+                            <p class="text-lg md:text-xl mb-6 drop-shadow-md">Mouses, teclados e monitores com descontos imperdíveis.</p>
+                            <button class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-xl hover:bg-blue-700 transform hover:scale-105 transition duration-300 category-link" data-category="Periféricos">
+                                Ver Periféricos
+                            </button>
+                        </div>
                     </div>
                 </div>
+                <button id="hero-prev" class="absolute top-1/2 left-3 md:left-5 transform -translate-y-1/2 bg-white/80 text-gray-800 p-2 md:p-3 rounded-full hover:bg-white focus:outline-none opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 shadow-md">
+                    <i class="fas fa-chevron-left fa-lg"></i>
+                </button>
+                <button id="hero-next" class="absolute top-1/2 right-3 md:right-5 transform -translate-y-1/2 bg-white/80 text-gray-800 p-2 md:p-3 rounded-full hover:bg-white focus:outline-none opacity-0 group-hover:opacity-100 transition-all duration-300 z-20 shadow-md">
+                    <i class="fas fa-chevron-right fa-lg"></i>
+                </button>
+                <div id="hero-dots" class="absolute bottom-5 left-1/2 transform -translate-x-1/2 flex space-x-2 z-20">
+                    </div>
             </section>
-
-            <section class="mb-8 text-center">
+            <section class="mb-12 text-center">
                 <button id="pc-assistant-button" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transform hover:scale-105 transition duration-300 btn-primary">
-                    Assistente de Configuração de PC ✨
+                    <i class="fas fa-cogs mr-2"></i> Assistente de Configuração de PC ✨
                 </button>
             </section>
 
-            <section class="mb-8" id="popular-categories-section">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Categorias Populares</h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Processadores">
-                        <i class="fas fa-microchip text-4xl text-red-500 mb-2"></i>
+            <section class="mb-12" id="popular-categories-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Categorias Populares</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-36 md:h-40 animate-on-scroll" data-category="Processadores">
+                        <i class="fas fa-microchip text-4xl text-red-500 mb-3"></i>
                         <span class="font-semibold text-gray-700">Processadores</span>
                     </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Placas de Vídeo">
-                        <i class="fas fa-desktop text-4xl text-red-500 mb-2"></i>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-36 md:h-40 animate-on-scroll" data-category="Placas de Vídeo">
+                        <i class="fas fa-desktop text-4xl text-red-500 mb-3"></i>
                         <span class="font-semibold text-gray-700">Placas de Vídeo</span>
                     </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Memórias RAM">
-                        <i class="fas fa-memory text-4xl text-red-500 mb-2"></i>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-36 md:h-40 animate-on-scroll" data-category="Memórias RAM">
+                        <i class="fas fa-memory text-4xl text-red-500 mb-3"></i>
                         <span class="font-semibold text-gray-700">Memórias RAM</span>
                     </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Armazenamento">
-                        <i class="fas fa-hdd text-4xl text-red-500 mb-2"></i>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-36 md:h-40 animate-on-scroll" data-category="Armazenamento">
+                        <i class="fas fa-hdd text-4xl text-red-500 mb-3"></i>
                         <span class="font-semibold text-gray-700">Armazenamento</span>
                     </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Fontes">
-                        <i class="fas fa-power-off text-4xl text-red-500 mb-2"></i>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-36 md:h-40 animate-on-scroll" data-category="Fontes">
+                        <i class="fas fa-power-off text-4xl text-red-500 mb-3"></i>
                         <span class="font-semibold text-gray-700">Fontes</span>
                     </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Periféricos">
-                        <i class="fas fa-keyboard text-4xl text-red-500 mb-2"></i>
-                        <span class="font-semibold text-gray-700">Periféricos</span>
-                    </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Monitores">
-                        <i class="fas fa-tv text-4xl text-red-500 mb-2"></i>
-                        <span class="font-semibold text-gray-700">Monitores</span>
-                    </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Gabinetes">
-                        <i class="fas fa-box-open text-4xl text-red-500 mb-2"></i>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-36 md:h-40 animate-on-scroll" data-category="Gabinetes">
+                        <i class="fas fa-box-open text-4xl text-red-500 mb-3"></i>
                         <span class="font-semibold text-gray-700">Gabinetes</span>
-                    </a>
-                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Mouses">
-                        <i class="fas fa-mouse text-4xl text-red-500 mb-2"></i>
-                        <span class="font-semibold text-gray-700">Mouses</span>
                     </a>
                 </div>
             </section>
 
-            <section class="mb-8" id="featured-section">
-                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Produtos em Destaque</h2>
+            <section class="mb-12" id="latest-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Novidades da Semana 🔥</h2>
+                <div id="latest-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    </div>
+            </section>
+            <section class="mb-12" id="featured-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Produtos em Destaque ⭐</h2>
                 <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     </div>
             </section>
@@ -206,8 +231,8 @@
         </div>
     </main>
 
-    <footer class="bg-gray-900 text-white p-6 mt-8">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer class="bg-gray-900 text-white p-8 mt-12">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
                 <h3 class="text-xl font-bold text-red-500 mb-4">GadgetX</h3>
                 <p class="text-gray-400 text-sm">A sua loja online de hardware e informática. As melhores marcas e os menores preços do mercado.</p>
@@ -225,18 +250,28 @@
                 <h3 class="text-lg font-semibold mb-4">Atendimento</h3>
                 <ul class="space-y-2 text-gray-400 text-sm">
                     <li><a href="#" class="hover:text-white transition-colors duration-200">Fale Conosco</a></li>
-                    <li><a href="#" class="hover:text-white transition-colors duration-200">Os Meus Pedidos</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">Meus Pedidos</a></li>
                     <li><a href="#" class="hover:text-white transition-colors duration-200">FAQ</a></li>
                 </ul>
-                <div class="flex space-x-4 mt-4">
+                <div class="flex space-x-4 mt-6">
                     <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-facebook-f text-xl"></i></a>
                     <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-instagram text-xl"></i></a>
                     <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-twitter text-xl"></i></a>
                     <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-youtube text-xl"></i></a>
                 </div>
             </div>
-        </div>
-        <div class="text-center text-gray-500 text-sm mt-8 pt-4 border-t border-gray-800">
+             <div>
+                <h3 class="text-lg font-semibold mb-4">Métodos de Pagamento</h3>
+                <div class="flex flex-wrap gap-3 items-center">
+                    <i class="fab fa-cc-visa text-3xl text-gray-300" title="Visa"></i>
+                    <i class="fab fa-cc-mastercard text-3xl text-gray-300" title="Mastercard"></i>
+                    <span class="bg-gray-700 px-2 py-1 rounded text-sm font-semibold" title="Pix">PIX</span>
+                    <i class="fas fa-barcode text-3xl text-gray-300" title="Boleto Bancário"></i>
+                </div>
+                <p class="text-xs text-gray-500 mt-3">Pagamentos seguros e protegidos.</p>
+            </div>
+            </div>
+        <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-gray-800">
             &copy; 2025 GadgetX. Todos os direitos reservados.
         </div>
     </footer>
@@ -247,6 +282,15 @@
             <button id="close-cart-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
             <div id="cart-items" class="max-h-80 overflow-y-auto pr-2 no-scrollbar">
                 <p id="empty-cart-message" class="text-gray-600">O seu carrinho está vazio.</p>
+            </div>
+            <div id="cart-payment-methods" class="mt-6 pt-4 border-t border-gray-200 text-center hidden">
+                <p class="text-sm text-gray-700 mb-2 font-medium">Aceitamos:</p>
+                <div class="flex justify-center space-x-4 items-center">
+                    <i class="fab fa-cc-visa text-2xl text-gray-500"></i>
+                    <i class="fab fa-cc-mastercard text-2xl text-gray-500"></i>
+                    <span class="bg-gray-200 px-2 py-0.5 rounded text-xs font-semibold text-gray-600" title="Pix">PIX</span>
+                    <i class="fas fa-barcode text-2xl text-gray-500"></i>
+                </div>
             </div>
             <div class="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center">
                 <span class="text-xl font-bold text-gray-800">Total: <span id="cart-total">R$ 0,00</span></span>
@@ -261,28 +305,23 @@
         <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 relative">
             <h2 class="text-2xl font-bold mb-4 text-gray-800">Assistente de Configuração de PC ✨</h2>
             <button id="close-pc-assistant-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-
             <div class="mb-4">
                 <label for="pc-assistant-input" class="block text-gray-700 text-sm font-bold mb-2">
                     Descreva as suas necessidades (orçamento, uso principal, componentes existentes/preferências):
                 </label>
                 <textarea id="pc-assistant-input" rows="6"
                           class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-y"
-                          placeholder="Ex: Orçamento de R$ 5000,00, para jogos (Fortnite, CS2), já tenho um monitor 144Hz.">
-                </textarea>
+                          placeholder="Ex: Orçamento de R$ 5000,00, para jogos (Fortnite, CS2), já tenho um monitor 144Hz."></textarea>
             </div>
-
             <button id="generate-pc-config-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-full btn-primary w-full mb-4">
                 Gerar Sugestão ✨
             </button>
-
             <div id="pc-assistant-loading" class="flex justify-center items-center py-4 hidden">
                 <div class="spinner"></div>
                 <span class="ml-3 text-gray-700">A gerar sugestão...</span>
             </div>
-
             <div id="pc-assistant-result" class="bg-gray-100 p-4 rounded-md max-h-80 overflow-y-auto no-scrollbar whitespace-pre-wrap text-gray-800 text-sm">
-                </div>
+            </div>
         </div>
     </div>
 
@@ -307,123 +346,221 @@
     </div>
 
     <script>
-        // Dados de Produtos Mock
+        // Dados de Produtos Mock (COM IMAGEM DO RYZEN 3 4100 ATUALIZADA)
         const products = [
             {
-                id: 1,
-                name: "Processador Intel Core i7-14700K",
-                category: "Processadores",
-                price: 2599.99,
-                image: "https://images.tcdn.com.br/img/img_prod/313499/90_processador_intel_core_i7_12700_2_1ghz_4_9ghz_turbo_12a_geracao_12_cores_20_threads_lga_1700_com_coo_17271_1_90904782757814888e3f75cc41cdc5d0.jpg",
+                id: 1, name: "Processador Intel Core i7-14700K", category: "Processadores", price: 2599.99,
+                image: "https://images.kabum.com.br/produtos/fotos/497575/processador-intel-core-i7-14700k-14-geracao-5-6-ghz-max-turbo-cache-33mb-20-nucleos-28-threads-lga1700-bx8071514700k_1700230671_g.jpg",
                 description: "O Intel Core i7-14700K é um processador de última geração, ideal para gamers e criadores de conteúdo que exigem alta performance. Com 20 núcleos (8 P-cores + 12 E-cores) e 28 threads, oferece uma capacidade de multitarefas excecional e velocidades de clock elevadas para os jogos mais recentes e aplicações exigentes. Possui cache Intel Smart Cache de 33MB e TDP de 125W."
             },
             {
-                id: 2,
-                name: "Placa de Vídeo NVIDIA GeForce RTX 4080",
-                category: "Placas de Vídeo",
-                price: 8999.99,
-                image: "https://allnations.com.br/images/thumbs/1852913_625.jpeg",
+                id: 2, name: "Placa de Vídeo NVIDIA GeForce RTX 4080", category: "Placas de Vídeo", price: 8999.99,
+                image: "https://allnations.com.br/images/thumbs/1852913_625.jpeg", 
                 description: "A NVIDIA GeForce RTX 4080 oferece desempenho ultra para gamers e criadores. Equipada com a arquitetura NVIDIA Ada Lovelace, ray tracing de terceira geração e Tensor Cores de quarta geração, proporciona gráficos hiper-realistas e taxas de frames elevadas. Ideal para jogos em 4K e trabalho profissional."
             },
             {
-                id: 3,
-                name: "Memória RAM DDR5 32GB (2x16GB) 6000MHz Corsair Vengeance RGB",
-                category: "Memórias RAM",
-                price: 799.99,
+                id: 3, name: "Memória RAM DDR5 32GB (2x16GB) 6000MHz Corsair Vengeance RGB", category: "Memórias RAM", price: 799.99,
                 image: "https://placehold.co/300x300/0000FF/FFFFFF?text=DDR5+32GB",
                 description: "As memórias Corsair Vengeance RGB DDR5 oferecem desempenho de ponta e iluminação RGB dinâmica. Com 32GB (2x16GB) e 6000MHz, garantem alta velocidade e capacidade para os sistemas mais recentes, otimizando jogos e aplicações pesadas."
             },
             {
-                id: 4,
-                name: "SSD NVMe M.2 2TB Samsung 990 Pro",
-                category: "Armazenamento",
-                price: 1299.99,
+                id: 4, name: "SSD NVMe M.2 2TB Samsung 990 Pro", category: "Armazenamento", price: 1299.99,
                 image: "https://placehold.co/300x300/FFFF00/000000?text=SSD+2TB",
                 description: "O Samsung 990 Pro é um SSD NVMe M.2 de 2TB que oferece velocidades de leitura/escrita sequenciais excecionais, atingindo até 7450 MB/s e 6900 MB/s, respetivamente. É a escolha perfeita para carregamento instantâneo de jogos, edição de vídeo 8K e manipulação de grandes volumes de dados."
             },
             {
-                id: 5,
-                name: "Placa-Mãe ASUS ROG Strix Z790-E Gaming WiFi",
-                category: "Placas-Mãe",
-                price: 2199.99,
+                id: 5, name: "Placa-Mãe ASUS ROG Strix Z790-E Gaming WiFi", category: "Placas-Mãe", price: 2199.99,
                 image: "https://placehold.co/300x300/FF00FF/FFFFFF?text=Z790-E",
                 description: "A ASUS ROG Strix Z790-E Gaming WiFi é uma placa-mãe premium projetada para processadores Intel de 12ª, 13ª e 14ª gerações. Suporta DDR5, PCIe 5.0 e oferece conectividade WiFi 6E, garantindo desempenho máximo e estabilidade para os setups mais exigentes."
             },
             {
-                id: 6,
-                name: "Gabinete Gaming Cooler Master HAF 700 EVO",
-                category: "Gabinetes",
-                price: 1599.99,
-                image: "https://placehold.co/300x300/00FFFF/000000?text=Gabinete",
+                id: 6, name: "Gabinete Gaming Cooler Master HAF 700 EVO", category: "Gabinetes", price: 1599.99,
+                image: "https://placehold.co/300x300/00FFFF/000000?text=Gabinete+CM",
                 description: "O Cooler Master HAF 700 EVO é um gabinete full-tower que se destaca pelo design arrojado e fluxo de ar inigualável. Compatível com os maiores componentes, oferece espaço para múltiplos radiadores e um sistema de cablagem otimizado, ideal para construções de alta performance."
             },
             {
-                id: 7,
-                name: "Fonte de Alimentação Corsair RM850e 850W 80 Plus Gold",
-                category: "Fontes",
-                price: 699.99,
+                id: 7, name: "Fonte de Alimentação Corsair RM850e 850W 80 Plus Gold", category: "Fontes", price: 699.99,
                 image: "https://placehold.co/300x300/800080/FFFFFF?text=Fonte+850W",
                 description: "A Corsair RM850e é uma fonte de alimentação totalmente modular de 850W, certificada com 80 Plus Gold, garantindo alta eficiência e baixo ruído. Perfeita para alimentar sistemas gaming de alta performance com fiabilidade e controlo de temperatura."
             },
             {
-                id: 8,
-                name: "Monitor Gaming Alienware AW2725DF 27'' QD-OLED 360Hz",
-                category: "Monitores",
-                price: 4999.99,
+                id: 8, name: "Monitor Gaming Alienware AW2725DF 27'' QD-OLED 360Hz", category: "Monitores", price: 4999.99,
                 image: "https://placehold.co/300x300/FFA500/FFFFFF?text=Monitor+360Hz",
                 description: "O Alienware AW2725DF é um monitor gaming de 27 polegadas com tecnologia QD-OLED, oferecendo cores vibrantes, pretos perfeitos e um contraste infinito. Com uma taxa de atualização de 360Hz e tempo de resposta de 0.03ms, proporciona uma experiência de jogo ultra-fluida e imersiva."
             },
             {
-                id: 9,
-                name: "Teclado Mecânico HyperX Alloy Origins Core RGB",
-                category: "Periféricos",
-                price: 499.99,
+                id: 9, name: "Teclado Mecânico HyperX Alloy Origins Core RGB", category: "Periféricos", price: 499.99,
                 image: "https://placehold.co/300x300/A0A0A0/FFFFFF?text=Teclado",
                 description: "O HyperX Alloy Origins Core RGB é um teclado mecânico compacto e robusto, ideal para gamers. Com switches mecânicos HyperX, iluminação RGB personalizável por tecla e um design portátil, oferece precisão e estilo para qualquer setup."
             },
             {
-                id: 10,
-                name: "Mouse Gaming Logitech G502 X LIGHTSPEED",
-                category: "Mouses",
-                price: 399.99,
+                id: 10, name: "Mouse Gaming Logitech G502 X LIGHTSPEED", category: "Mouses", price: 399.99,
                 image: "https://placehold.co/300x300/B0C4DE/000000?text=Mouse",
                 description: "O Logitech G502 X LIGHTSPEED é um mouse gaming sem fios de alta performance, equipado com o sensor HERO 25K para precisão excecional e tecnologia LIGHTSPEED para latência ultra-baixa. Com 13 botões programáveis e um design confortável, é perfeito para jogos intensos."
             },
-            // Novos Processadores Adicionados
             {
-                id: 11,
-                name: "Processador AMD Ryzen 7 7800X3D",
-                category: "Processadores",
-                price: 2499.99,
-                image: "https://placehold.co/300x300/AF0F0F/FFFFFF?text=Ryzen+7+7800X3D",
+                id: 11, name: "Processador AMD Ryzen 7 7800X3D", category: "Processadores", price: 2499.99,
+                image: "https://images.kabum.com.br/produtos/fotos/426262/processador-amd-ryzen-7-7800x3d-cache-104mb-4-2ghz-5-0ghz-max-turbo-am5-8-nucleos-video-integrado-100-100000910wof_1679669070_g.jpg",
                 description: "O AMD Ryzen 7 7800X3D é um processador gaming de alto nível, com a tecnologia 3D V-Cache para um desempenho excecional em jogos. Com 8 núcleos e 16 threads, oferece uma experiência de jogo fluida e responsiva, sendo uma das melhores opções para gamers."
             },
             {
-                id: 12,
-                name: "Processador Intel Core i5-13600K",
-                category: "Processadores",
-                price: 1799.99,
-                image: "https://placehold.co/300x300/0071C5/FFFFFF?text=Intel+i5-13600K",
+                id: 12, name: "Processador Intel Core i5-13600K", category: "Processadores", price: 1799.99,
+                image: "https://images.kabum.com.br/produtos/fotos/383099/processador-intel-core-i5-13600k-13-geracao-3-5-ghz-5-1ghz-turbo-cache-24mb-14-nucleos-20-threads-lga-1700-video-integrado-bx8071513600k_1665604630_g.jpg",
                 description: "O Intel Core i5-13600K oferece um excelente equilíbrio entre preço e performance para jogos e produtividade. Com 14 núcleos (6 P-cores + 8 E-cores) e 20 threads, é uma escolha sólida para quem busca um upgrade potente sem gastar muito."
             },
             {
-                id: 13,
-                name: "Processador AMD Ryzen 5 7600X",
-                category: "Processadores",
-                price: 1399.99,
-                image: "https://placehold.co/300x300/AF0F0F/FFFFFF?text=Ryzen+5+7600X",
+                id: 13, name: "Processador AMD Ryzen 5 7600X", category: "Processadores", price: 1399.99,
+                image: "https://images.kabum.com.br/produtos/fotos/378414/processador-amd-ryzen-5-7600x-5-3ghz-max-turbo-cache-38mb-am5-6-nucleos-video-integrado-100-100000593wof_1662475099_g.jpg",
                 description: "O AMD Ryzen 5 7600X é um processador de 6 núcleos e 12 threads, ideal para builds gaming de gama média-alta. Com arquitetura Zen 4 e suporte a DDR5 e PCIe 5.0, oferece um desempenho robusto para os jogos atuais e futuras aplicações."
+            },
+            {
+                id: 14, name: "NVIDIA GeForce RTX 4070 Ti SUPER", category: "Placas de Vídeo", price: 6999.90,
+                image: "https://placehold.co/300x300/76B900/FFFFFF?text=RTX+4070TiS",
+                description: "Desempenho excepcional para jogos em 1440p e 4K, com Ray Tracing avançado e DLSS 3. Ideal para entusiastas."
+            },
+            {
+                id: 15, name: "AMD Radeon RX 7900 XT", category: "Placas de Vídeo", price: 5899.99,
+                image: "https://placehold.co/300x300/FF0000/FFFFFF?text=RX+7900XT",
+                description: "Potência incrível para jogos em 4K e criação de conteúdo, com arquitetura RDNA 3 e grande quantidade de VRAM."
+            },
+            {
+                id: 16, name: "NVIDIA GeForce RTX 4070 SUPER", category: "Placas de Vídeo", price: 4999.90,
+                image: "https://placehold.co/300x300/76B900/FFFFFF?text=RTX+4070S",
+                description: "Excelente performance para jogos em 1440p com altas taxas de quadros, Ray Tracing e eficiência energética."
+            },
+            {
+                id: 17, name: "AMD Radeon RX 7800 XT", category: "Placas de Vídeo", price: 3999.99,
+                image: "https://placehold.co/300x300/FF0000/FFFFFF?text=RX+7800XT",
+                description: "Ótima escolha para gaming em 1440p, oferecendo um equilíbrio perfeito entre performance e preço na arquitetura RDNA 3."
+            },
+            {
+                id: 18, name: "NVIDIA GeForce RTX 4060 Ti (16GB)", category: "Placas de Vídeo", price: 2999.90,
+                image: "https://placehold.co/300x300/76B900/FFFFFF?text=RTX+4060Ti16",
+                description: "Perfeita para jogos em 1080p e 1440p, com 16GB de VRAM para texturas em alta resolução e DLSS 3."
+            },
+            {
+                id: 19, name: "Processador Intel Core i3-12100F", category: "Processadores", price: 599.90,
+                image: "https://images.kabum.com.br/produtos/fotos/283715/processador-intel-core-i3-12100f-12-geracao-3-3ghz-4-3ghz-turbo-cache-12mb-4-nucleos-8-threads-lga1700-bx8071512100f_1642770000_g.jpg",
+                description: "Excelente processador de entrada com 4 núcleos e 8 threads, ideal para jogos em 1080p e tarefas do dia a dia. Ótimo custo-benefício."
+            },
+            {
+                id: 20, name: "Processador AMD Ryzen 5 5500", category: "Processadores", price: 649.99,
+                image: "https://images.kabum.com.br/produtos/fotos/289397/processador-amd-ryzen-5-5500-3-6ghz-4-2ghz-turbo-6-nucleos-12-threads-cache-19mb-am4-100-100000457box_1650378897_g.jpg",
+                description: "Com 6 núcleos e 12 threads, este processador oferece ótimo desempenho em multitarefas e jogos, sendo uma escolha sólida para builds de entrada/intermediários."
+            },
+            {
+                id: 21, name: "Processador Intel Core i3-10100F", category: "Processadores", price: 479.90,
+                image: "https://images.kabum.com.br/produtos/fotos/112990/processador-intel-core-i3-10100f-cache-6mb-3-6ghz-4-3ghz-max-turbo-lga1200-bx8070110100f_1589200200_g.jpg",
+                description: "Uma opção ainda mais acessível da Intel, com 4 núcleos e 8 threads, adequada para computadores básicos focados em produtividade e navegação."
+            },
+            {
+                id: 22, name: "Processador AMD Ryzen 3 4100", category: "Processadores", price: 449.99,
+                image: "https://images.tcdn.com.br/img/img_prod/577903/processador_amd_ryzen_3_4100_am4_4core_3_8ghz_4_0ghz_max_turbo_6mb_cache_box_2014_1_f0bd78aa57a1133bb46f882064b45a99.jpg",
+                description: "Processador de entrada da AMD com 4 núcleos e 8 threads, perfeito para tarefas leves, estudos e navegação na internet com bom desempenho."
+            },
+            {
+                id: 23, name: "NVIDIA GeForce GTX 1650 Super 4GB", category: "Placas de Vídeo", price: 999.90,
+                image: "https://placehold.co/300x300/76B900/FFFFFF?text=GTX+1650S",
+                description: "Ótima para jogos em 1080p com bom desempenho em títulos populares e eSports. Excelente custo-benefício para gamers de entrada."
+            },
+            {
+                id: 24, name: "AMD Radeon RX 6500 XT 4GB", category: "Placas de Vídeo", price: 849.99,
+                image: "https://placehold.co/300x300/FF0000/FFFFFF?text=RX+6500XT",
+                description: "Placa de vídeo de entrada com arquitetura RDNA 2, ideal para jogos mais leves e eSports em 1080p com orçamento limitado."
+            },
+            {
+                id: 25, name: "NVIDIA GeForce GT 1030 2GB GDDR5", category: "Placas de Vídeo", price: 499.90,
+                image: "https://placehold.co/300x300/76B900/FFFFFF?text=GT+1030",
+                description: "Solução gráfica básica para PCs sem vídeo integrado, HTPCs ou para rodar jogos muito leves e antigos. Baixo consumo de energia."
+            },
+            {
+                id: 26, name: "AMD Radeon RX 550 4GB", category: "Placas de Vídeo", price: 579.99,
+                image: "https://placehold.co/300x300/FF0000/FFFFFF?text=RX+550",
+                description: "Uma placa de vídeo de entrada da AMD, adequada para tarefas multimídia, navegação e jogos casuais ou mais antigos."
+            },
+            {
+                id: 27, name: "Memória RAM Kingston Fury Beast 8GB DDR4 3200MHz", category: "Memórias RAM", price: 189.90,
+                image: "https://placehold.co/300x300/0000FF/FFFFFF?text=RAM+8GB+DDR4",
+                description: "Módulo único de 8GB DDR4 3200MHz, ideal para sistemas de entrada e com ótimo potencial para upgrade futuro adicionando outro pente."
+            },
+            {
+                id: 28, name: "Memória RAM Corsair Vengeance LPX 16GB (2x8GB) DDR4 3200MHz", category: "Memórias RAM", price: 359.99,
+                image: "https://placehold.co/300x300/0000FF/FFFFFF?text=RAM+16GB+Kit",
+                description: "Kit dual-channel de 16GB (2x8GB) DDR4 3200MHz, oferecendo excelente performance para jogos e multitarefas em sistemas de custo-benefício."
+            },
+            {
+                id: 29, name: "Memória RAM Crucial Ballistix 8GB DDR4 2666MHz", category: "Memórias RAM", price: 169.90,
+                image: "https://placehold.co/300x300/0000FF/FFFFFF?text=RAM+8GB+2666",
+                description: "Opção de memória DDR4 8GB com 2666MHz, confiável e acessível para computadores básicos focados em tarefas cotidianas e navegação."
+            },
+            {
+                id: 30, name: "Placa-Mãe ASRock H610M-HVS/M.2 R2.0 (Intel LGA1700)", category: "Placas-Mãe", price: 489.90,
+                image: "https://placehold.co/300x300/FF00FF/FFFFFF?text=H610M",
+                description: "Placa-mãe de entrada para processadores Intel Core de 12ª, 13ª e 14ª geração (soquete LGA1700), com suporte a M.2 e recursos essenciais."
+            },
+            {
+                id: 31, name: "Placa-Mãe Gigabyte A520M K V2 (AMD AM4)", category: "Placas-Mãe", price: 429.99,
+                image: "https://placehold.co/300x300/FF00FF/FFFFFF?text=A520M",
+                description: "Excelente placa-mãe AM4 de custo-benefício para processadores AMD Ryzen das séries 3000, 4000G e 5000. Suporta M.2 NVMe."
+            },
+            {
+                id: 32, name: "Placa-Mãe MSI A320M-A PRO (AMD AM4)", category: "Placas-Mãe", price: 379.90,
+                image: "https://placehold.co/300x300/FF00FF/FFFFFF?text=A320M",
+                description: "Opção básica e confiável para processadores AMD Ryzen mais antigos (1ª/2ª/3ª gen) ou APUs Athlon no soquete AM4, ideal para builds de baixo custo."
+            },
+            {
+                id: 33, name: "SSD Kingston A400 240GB SATA III", category: "Armazenamento", price: 149.90,
+                image: "https://placehold.co/300x300/FFFF00/000000?text=SSD+240GB",
+                description: "SSD SATA III de 240GB, perfeito para acelerar o sistema operacional e programas essenciais em computadores de entrada ou upgrades."
+            },
+            {
+                id: 34, name: "SSD Crucial BX500 480GB SATA III", category: "Armazenamento", price: 229.99,
+                image: "https://placehold.co/300x300/FFFF00/000000?text=SSD+480GB",
+                description: "Ótimo SSD SATA III com 480GB de capacidade, oferecendo um bom equilíbrio entre espaço, velocidade e preço para uso geral."
+            },
+            {
+                id: 35, name: "SSD Kingston NV1 NVMe PCIe 500GB", category: "Armazenamento", price: 289.90,
+                image: "https://placehold.co/300x300/FFFF00/000000?text=NVMe+500GB",
+                description: "SSD NVMe PCIe de 500GB, oferecendo velocidades significativamente maiores que SATA, ideal para quem busca mais performance sem gastar muito."
+            },
+            {
+                id: 36, name: "HD Seagate Barracuda 1TB 7200RPM SATA III", category: "Armazenamento", price: 259.90,
+                image: "https://placehold.co/300x300/FFFF00/000000?text=HD+1TB",
+                description: "Disco rígido de 1TB com 7200RPM, ideal para armazenar grandes volumes de arquivos, jogos e backups. Ótimo custo por gigabyte."
+            },
+            {
+                id: 37, name: "Gabinete Gamer Mancer Goblin, Lateral de Vidro, Preto", category: "Gabinetes", price: 179.90,
+                image: "https://placehold.co/300x300/00FFFF/000000?text=Mancer+Goblin",
+                description: "Gabinete de entrada popular com lateral em vidro temperado, bom espaço interno para gerenciamento de cabos e ventilação adequada para builds básicos."
+            },
+            {
+                id: 38, name: "Gabinete TGT Carbon, Mid-Tower, Preto", category: "Gabinetes", price: 159.99,
+                image: "https://placehold.co/300x300/00FFFF/000000?text=TGT+Carbon",
+                description: "Opção Mid-Tower simples e funcional, com design minimalista e foco em bom fluxo de ar para componentes de entrada."
+            },
+            {
+                id: 39, name: "Gabinete Pichau Kazan 2, Mid-Tower, Preto", category: "Gabinetes", price: 189.90,
+                image: "https://placehold.co/300x300/00FFFF/000000?text=Pichau+Kazan2",
+                description: "Gabinete Mid-Tower com design sóbrio e bom espaço para organização, ideal para quem busca uma opção discreta e eficiente."
+            },
+            {
+                id: 40, name: "Gabinete Aerocool Cylon Mini, Mini Tower, Preto", category: "Gabinetes", price: 209.90,
+                image: "https://placehold.co/300x300/00FFFF/000000?text=Cylon+Mini",
+                description: "Gabinete Mini Tower compacto com design moderno, incluindo uma faixa RGB frontal. Ideal para builds menores (Micro-ATX/Mini-ITX) com estilo."
             }
         ];
 
-        let cart = []; // Array global para armazenar os itens do carrinho
+        let cart = [];
 
         // Obter elementos do DOM
         const homeLogo = document.getElementById('home-logo');
         const featuredProductsContainer = document.getElementById('featured-products');
+        const latestProductsContainer = document.getElementById('latest-products'); // Novo container
         const allProductsSection = document.getElementById('all-products-section');
         const featuredSection = document.getElementById('featured-section');
+        const latestSection = document.getElementById('latest-section'); // Nova seção
         const popularCategoriesSection = document.getElementById('popular-categories-section');
+        const heroBannerSection = document.getElementById('hero-banner-section'); // Seção do banner principal
         const allProductsTitle = document.getElementById('all-products-title');
         const allProductsContainer = document.getElementById('all-products-container');
         const searchInput = document.getElementById('search-input');
@@ -434,9 +571,9 @@
         const cartTotalSpan = document.getElementById('cart-total');
         const cartCountSpan = document.getElementById('cart-count');
         const emptyCartMessage = document.getElementById('empty-cart-message');
+        const cartPaymentMethodsDiv = document.getElementById('cart-payment-methods'); // Div de pagamentos no carrinho
         const noResultsMessage = document.getElementById('no-results');
 
-        // Elementos do Assistente de PC
         const pcAssistantButton = document.getElementById('pc-assistant-button');
         const pcAssistantModal = document.getElementById('pc-assistant-modal');
         const closePcAssistantModalButton = document.getElementById('close-pc-assistant-modal');
@@ -445,7 +582,6 @@
         const pcAssistantLoading = document.getElementById('pc-assistant-loading');
         const pcAssistantResult = document.getElementById('pc-assistant-result');
 
-        // Elementos do Modal de Detalhes do Produto
         const productDetailModal = document.getElementById('product-detail-modal');
         const closeProductDetailModalButton = document.getElementById('close-product-detail-modal');
         const detailProductImage = document.getElementById('detail-product-image');
@@ -455,19 +591,106 @@
         const detailProductPrice = document.getElementById('detail-product-price');
         const detailAddToCartBtn = document.getElementById('detail-add-to-cart-btn');
 
-        /**
-         * Renderiza um único cartão de produto.
-         * @param {Object} product - O objeto produto.
-         * @returns {string} - A string HTML para o cartão do produto.
-         */
-        function renderProductCard(product) {
+        // INÍCIO: Lógica do Carrossel de Banners
+        const heroSlidesContainer = document.getElementById('hero-slides-container');
+        const heroSlides = Array.from(heroSlidesContainer.children);
+        const heroPrevButton = document.getElementById('hero-prev');
+        const heroNextButton = document.getElementById('hero-next');
+        const heroDotsContainer = document.getElementById('hero-dots');
+        let currentHeroSlide = 0;
+        let heroInterval;
+
+        function updateHeroSlides() {
+            heroSlides.forEach((slide, index) => {
+                slide.classList.toggle('opacity-100', index === currentHeroSlide);
+                slide.classList.toggle('opacity-0', index !== currentHeroSlide);
+            });
+            updateHeroDots();
+        }
+
+        function updateHeroDots() {
+            heroDotsContainer.innerHTML = '';
+            heroSlides.forEach((_, index) => {
+                const dot = document.createElement('button');
+                dot.classList.add('hero-dot', 'w-3', 'h-3', 'rounded-full', 'border-2', 'border-white', 'hover:bg-white/80');
+                if (index === currentHeroSlide) {
+                    dot.classList.add('bg-white');
+                } else {
+                    dot.classList.add('bg-white/40');
+                }
+                dot.addEventListener('click', () => {
+                    currentHeroSlide = index;
+                    updateHeroSlides();
+                    resetHeroInterval();
+                });
+                heroDotsContainer.appendChild(dot);
+            });
+        }
+
+        function nextHeroSlide() {
+            currentHeroSlide = (currentHeroSlide + 1) % heroSlides.length;
+            updateHeroSlides();
+        }
+
+        function prevHeroSlide() {
+            currentHeroSlide = (currentHeroSlide - 1 + heroSlides.length) % heroSlides.length;
+            updateHeroSlides();
+        }
+
+        function startHeroInterval() {
+            heroInterval = setInterval(nextHeroSlide, 7000); // Muda a cada 7 segundos
+        }
+
+        function resetHeroInterval() {
+            clearInterval(heroInterval);
+            startHeroInterval();
+        }
+
+        if (heroPrevButton && heroNextButton && heroSlides.length > 0) {
+            heroPrevButton.addEventListener('click', () => {
+                prevHeroSlide();
+                resetHeroInterval();
+            });
+            heroNextButton.addEventListener('click', () => {
+                nextHeroSlide();
+                resetHeroInterval();
+            });
+            updateHeroSlides(); // Inicializa
+            startHeroInterval(); // Inicia auto-play
+        }
+        // FIM: Lógica do Carrossel de Banners
+
+
+        // INÍCIO: Lógica para Animação de Scroll
+        const handleScrollAnimation = () => {
+            const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
+            elementsToAnimate.forEach((el) => {
+                const elementTop = el.getBoundingClientRect().top;
+                const elementBottom = el.getBoundingClientRect().bottom;
+                // Verifica se o elemento está parcialmente na viewport
+                if (elementTop < window.innerHeight && elementBottom > 0) {
+                    el.classList.add('is-visible');
+                } else {
+                    // Opcional: remover a classe para re-animar quando sair e entrar novamente
+                    // el.classList.remove('is-visible');
+                }
+            });
+        };
+
+        window.addEventListener('scroll', handleScrollAnimation);
+        // FIM: Lógica para Animação de Scroll
+
+
+        function renderProductCard(product, applyScrollAnim = false) {
+            // Adiciona a classe 'animate-on-scroll' se applyScrollAnim for true
+            const scrollClass = applyScrollAnim ? ' animate-on-scroll' : '';
             return `
-                <div class="product-card bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center" data-product-id="${product.id}">
-                    <img src="${product.image}" alt="${product.name}" class="w-48 h-48 object-contain mb-4 rounded-md">
-                    <h3 class="text-lg font-semibold text-gray-800 mb-2">${product.name}</h3>
-                    <p class="text-gray-600 text-sm mb-2">${product.description.substring(0, 70)}...</p>
+                <div class="product-card bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center${scrollClass}" data-product-id="${product.id}">
+                    <img src="${product.image}" alt="${product.name}" class="w-48 h-48 object-contain mb-4 rounded-md" onerror="this.onerror=null;this.src='https://placehold.co/300x300/cccccc/999999?text=Imagem+Indisponível'; this.alt='Imagem Indisponível'">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2 h-14 overflow-hidden">${product.name}</h3>
+                    <p class="text-gray-600 text-sm mb-2 h-12 overflow-hidden">${product.description.substring(0, 70)}...</p>
                     <p class="text-2xl font-bold text-red-600 mb-4">R$ ${product.price.toFixed(2).replace('.', ',')}</p>
-                    <button class="add-to-cart-btn bg-red-600 text-white font-bold py-2 px-4 rounded-full btn-primary w-full"
+                    <button class="add-to-cart-btn bg-red-600 text-white font-bold py-2 px-4 rounded-full btn-primary w-full mt-auto"
                             data-product-id="${product.id}">
                         Adicionar ao Carrinho
                     </button>
@@ -475,34 +698,27 @@
             `;
         }
 
-        /**
-         * Exibe os produtos num dado contentor.
-         * @param {Array} productList - Array de objetos produto.
-         * @param {HTMLElement} container - O elemento DOM para renderizar os produtos.
-         */
-        function displayProducts(productList, container) {
-            container.innerHTML = productList.map(renderProductCard).join('');
-            // Anexar ouvintes de eventos a TODOS os botões "Adicionar ao Carrinho"
+        function displayProducts(productList, container, applyScrollAnim = false) {
+            container.innerHTML = productList.map(p => renderProductCard(p, applyScrollAnim)).join('');
             container.querySelectorAll('.add-to-cart-btn').forEach(button => {
                 button.addEventListener('click', (event) => {
-                    event.stopPropagation(); // Previne que o clique no botão abra o modal de detalhes
+                    event.stopPropagation();
                     const productId = parseInt(event.currentTarget.dataset.productId);
                     addToCart(productId);
                 });
             });
-            // Anexar ouvintes de eventos para abrir o modal de detalhes do produto ao clicar no card
             container.querySelectorAll('.product-card').forEach(card => {
                 card.addEventListener('click', (event) => {
                     const productId = parseInt(event.currentTarget.dataset.productId);
                     openProductDetailModal(productId);
                 });
             });
+            // Após renderizar, checa animações de scroll para elementos já visíveis
+            if(applyScrollAnim) {
+                 setTimeout(handleScrollAnimation, 50); // Pequeno delay para garantir renderização
+            }
         }
 
-        /**
-         * Adiciona um produto ao carrinho.
-         * @param {number} productId - O ID do produto a adicionar.
-         */
         function addToCart(productId) {
             const product = products.find(p => p.id === productId);
             if (product) {
@@ -516,20 +732,11 @@
             }
         }
 
-        /**
-         * Remove um produto do carrinho.
-         * @param {number} productId - O ID do produto a remover.
-         */
         function removeFromCart(productId) {
             cart = cart.filter(item => item.id !== productId);
             updateCartDisplay();
         }
 
-        /**
-         * Atualiza a quantidade de um produto no carrinho.
-         * @param {number} productId - O ID do produto.
-         * @param {number} newQuantity - A nova quantidade.
-         */
         function updateCartQuantity(productId, newQuantity) {
             const item = cart.find(item => item.id === productId);
             if (item) {
@@ -542,18 +749,17 @@
             }
         }
 
-        /**
-         * Atualiza a exibição do carrinho (itens, total, contagem).
-         */
         function updateCartDisplay() {
-            cartItemsContainer.innerHTML = ''; // Limpar itens existentes
+            cartItemsContainer.innerHTML = '';
             let total = 0;
             let totalItems = 0;
 
             if (cart.length === 0) {
                 emptyCartMessage.classList.remove('hidden');
+                cartPaymentMethodsDiv.classList.add('hidden'); // Esconde métodos de pagamento se carrinho vazio
             } else {
                 emptyCartMessage.classList.add('hidden');
+                cartPaymentMethodsDiv.classList.remove('hidden'); // Mostra métodos de pagamento
                 cart.forEach(item => {
                     const itemTotal = item.price * item.quantity;
                     total += itemTotal;
@@ -563,152 +769,166 @@
                     cartItemDiv.className = 'flex items-center justify-between p-3 border-b border-gray-200 last:border-b-0';
                     cartItemDiv.innerHTML = `
                         <div class="flex items-center">
-                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain rounded-md mr-4">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain rounded-md mr-4" onerror="this.onerror=null;this.src='https://placehold.co/64x64/cccccc/999999?text=Img'; this.alt='Img Indisponível'">
                             <div>
-                                <h4 class="font-semibold text-gray-800">${item.name}</h4>
-                                <p class="text-sm text-gray-600">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
+                                <h4 class="font-semibold text-gray-800 text-sm">${item.name}</h4>
+                                <p class="text-xs text-gray-600">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
                             </div>
                         </div>
-                        <div class="flex items-center space-x-3">
-                            <button class="quantity-btn bg-gray-200 text-gray-700 px-2 py-1 rounded-md hover:bg-gray-300" data-id="${item.id}" data-action="decrease">-</button>
-                            <span class="text-gray-800 font-medium">${item.quantity}</span>
-                            <button class="quantity-btn bg-gray-200 text-gray-700 px-2 py-1 rounded-md hover:bg-gray-300" data-id="${item.id}" data-action="increase">+</button>
-                            <button class="remove-from-cart-btn text-red-500 hover:text-red-700" data-id="${item.id}">
-                                <i class="fas fa-trash-alt"></i>
+                        <div class="flex items-center space-x-2">
+                            <button class="quantity-btn bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300 text-xs" data-id="${item.id}" data-action="decrease">-</button>
+                            <span class="text-gray-800 font-medium text-sm">${item.quantity}</span>
+                            <button class="quantity-btn bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md hover:bg-gray-300 text-xs" data-id="${item.id}" data-action="increase">+</button>
+                            <button class="remove-from-cart-btn text-red-500 hover:text-red-700 ml-2" data-id="${item.id}">
+                                <i class="fas fa-trash-alt text-sm"></i>
                             </button>
                         </div>
                     `;
                     cartItemsContainer.appendChild(cartItemDiv);
                 });
 
-                // Adicionar ouvintes de eventos para botões de quantidade e remover
                 cartItemsContainer.querySelectorAll('.quantity-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
                         const id = parseInt(event.currentTarget.dataset.id);
                         const action = event.currentTarget.dataset.action;
                         const item = cart.find(i => i.id === id);
                         if (item) {
-                            if (action === 'increase') {
-                                updateCartQuantity(id, item.quantity + 1);
-                            } else if (action === 'decrease') {
-                                updateCartQuantity(id, item.quantity - 1);
-                            }
+                            if (action === 'increase') updateCartQuantity(id, item.quantity + 1);
+                            else if (action === 'decrease') updateCartQuantity(id, item.quantity - 1);
                         }
                     });
                 });
-
                 cartItemsContainer.querySelectorAll('.remove-from-cart-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
+                        // Corrigido para obter o ID do botão e não do ícone interno
                         const id = parseInt(event.currentTarget.dataset.id);
                         removeFromCart(id);
                     });
                 });
             }
-
             cartTotalSpan.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
             cartCountSpan.textContent = totalItems;
         }
 
-        /**
-         * Filtra os produtos com base na entrada de pesquisa.
-         */
+        function showMainPageContent() {
+            featuredSection.classList.remove('hidden');
+            latestSection.classList.remove('hidden'); // Mostra novidades
+            popularCategoriesSection.classList.remove('hidden');
+            heroBannerSection.classList.remove('hidden'); // Mostra banner
+            allProductsSection.classList.add('hidden');
+            searchInput.value = '';
+            document.documentElement.scrollTop = 0; // Volta ao topo
+        }
+        
+        function showAllProductsView(title, productList) {
+            featuredSection.classList.add('hidden');
+            latestSection.classList.add('hidden');
+            popularCategoriesSection.classList.add('hidden');
+            heroBannerSection.classList.add('hidden'); // Esconde banner
+            allProductsSection.classList.remove('hidden');
+            allProductsTitle.textContent = title;
+
+            if (productList.length > 0) {
+                displayProducts(productList, allProductsContainer, true); // Habilita animação de scroll
+                noResultsMessage.classList.add('hidden');
+            } else {
+                allProductsContainer.innerHTML = '';
+                noResultsMessage.classList.remove('hidden');
+                noResultsMessage.textContent = `Nenhum produto encontrado para "${title.replace('Resultados da Pesquisa para "', '').replace('Produtos: ', '').replace('"', '')}".`;
+            }
+            // Rola para a seção de produtos, menos um offset para o header fixo
+            const headerOffset = document.querySelector('header').offsetHeight || 80;
+            window.scrollTo({
+                top: allProductsSection.offsetTop - headerOffset,
+                behavior: 'smooth'
+            });
+        }
+
+
         function filterProducts() {
-            const searchTerm = searchInput.value.toLowerCase();
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            if (!searchTerm) { // Se a pesquisa estiver vazia, volta para a home
+                showMainPageContent();
+                displayFeaturedProducts(); 
+                displayLatestProducts(); 
+                return;
+            }
             const filtered = products.filter(product =>
                 product.name.toLowerCase().includes(searchTerm) ||
                 product.description.toLowerCase().includes(searchTerm) ||
                 product.category.toLowerCase().includes(searchTerm)
             );
-
-            // Esconder secções da homepage e exibir a secção "Todos os Produtos"
-            featuredSection.classList.add('hidden');
-            popularCategoriesSection.classList.add('hidden');
-            allProductsSection.classList.remove('hidden');
-
-            allProductsTitle.textContent = `Resultados da Pesquisa para "${searchInput.value}"`;
-
-            if (filtered.length > 0) {
-                displayProducts(filtered, allProductsContainer);
-                noResultsMessage.classList.add('hidden');
-            } else {
-                allProductsContainer.innerHTML = '';
-                noResultsMessage.classList.remove('hidden');
-            }
+            showAllProductsView(`Resultados da Pesquisa para "${searchInput.value}"`, filtered);
         }
 
-        /**
-         * Exibe produtos de uma categoria específica.
-         * @param {string} categoryName - O nome da categoria a ser exibida.
-         */
+
         function displayCategoryProducts(categoryName) {
             let filteredProducts;
+            let title;
             if (categoryName === "Todos") {
                 filteredProducts = products;
-                allProductsTitle.textContent = "Todos os Produtos";
+                title = "Todos os Produtos";
             } else {
                 filteredProducts = products.filter(product => product.category === categoryName);
-                allProductsTitle.textContent = `Produtos: ${categoryName}`;
+                title = `Produtos: ${categoryName}`;
             }
-
-            // Esconder secções da homepage e exibir a secção "Todos os Produtos"
-            featuredSection.classList.add('hidden');
-            popularCategoriesSection.classList.add('hidden');
-            allProductsSection.classList.remove('hidden');
-
-
-            if (filteredProducts.length > 0) {
-                displayProducts(filteredProducts, allProductsContainer);
-                noResultsMessage.classList.add('hidden');
-            } else {
-                allProductsContainer.innerHTML = '';
-                noResultsMessage.classList.remove('hidden');
-                noResultsMessage.textContent = `Nenhum produto encontrado na categoria "${categoryName}".`;
-            }
+            showAllProductsView(title, filteredProducts);
         }
 
-        /**
-         * Abre o modal de detalhes do produto com as informações do produto.
-         * @param {number} productId - O ID do produto a ser exibido.
-         */
         function openProductDetailModal(productId) {
             const product = products.find(p => p.id === productId);
             if (product) {
                 detailProductImage.src = product.image;
+                detailProductImage.onerror = () => {
+                    detailProductImage.src = 'https://placehold.co/300x300/cccccc/999999?text=Imagem+Indisponível';
+                    detailProductImage.alt = 'Imagem Indisponível';
+                };
                 detailProductName.textContent = product.name;
                 detailProductCategory.textContent = product.category;
                 detailProductDescription.textContent = product.description;
                 detailProductPrice.textContent = `R$ ${product.price.toFixed(2).replace('.', ',')}`;
-                detailAddToCartBtn.onclick = () => { // Adicionar o evento de adicionar ao carrinho no modal
+                detailAddToCartBtn.onclick = () => {
                     addToCart(product.id);
-                    productDetailModal.classList.add('hidden'); // Fecha o modal após adicionar
+                    productDetailModal.classList.add('hidden');
                 };
                 productDetailModal.classList.remove('hidden');
             }
         }
 
-        /**
-         * Gera uma sugestão de configuração de PC usando a API Gemini.
-         */
         async function generatePcConfiguration() {
             const promptText = pcAssistantInput.value.trim();
             if (!promptText) {
                 pcAssistantResult.textContent = 'Por favor, descreva as suas necessidades para o PC.';
                 return;
             }
-
             pcAssistantLoading.classList.remove('hidden');
-            pcAssistantResult.textContent = ''; // Limpar resultados anteriores
+            pcAssistantResult.textContent = '';
 
-            const fullPrompt = `Crie uma configuração de PC com base nas seguintes necessidades:
+            const fullPrompt = `Crie uma configuração de PC Gamer detalhada e otimizada para o Brasil, com base nas seguintes necessidades:
 ${promptText}
-Apresente a configuração com os seguintes componentes: Processador, Placa de Vídeo, Placa-Mãe, Memória RAM, Armazenamento, Fonte e Gabinete. Inclua uma breve justificativa para cada escolha e o preço estimado de cada componente (se possível, use valores realistas para o mercado brasileiro, mesmo que sejam fictícios). Formate a resposta de forma clara, com títulos para cada componente e justificativas.`;
+Apresente a configuração com os seguintes componentes (se aplicável):
+1.  **Processador (CPU):** [Nome do Modelo] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+2.  **Placa de Vídeo (GPU):** [Nome do Modelo] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+3.  **Placa-Mãe:** [Nome do Modelo] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+4.  **Memória RAM:** [Capacidade, Velocidade, Tipo ex: 16GB DDR4 3200MHz] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+5.  **Armazenamento Principal (SSD):** [Tipo e Capacidade ex: SSD NVMe 1TB] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+6.  **Armazenamento Secundário (Opcional):** [Tipo e Capacidade] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+7.  **Fonte de Alimentação (PSU):** [Potência e Certificação ex: 650W 80 Plus Bronze] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+8.  **Gabinete:** [Nome do Modelo ou Tipo] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+9.  **Cooler do Processador (Se não incluso ou se recomendar um melhor):** [Nome] - Justificativa: [Curta] - Preço Estimado: R$ [Valor]
+**Total Estimado da Configuração:** R$ [Soma dos Preços]
+Observações Adicionais: [Breves comentários sobre compatibilidade, gargalos ou sugestões de upgrade futuro, se pertinente]
 
-            let chatHistory = [];
-            chatHistory.push({ role: "user", parts: [{ text: fullPrompt }] });
+Use preços realistas para o mercado brasileiro atual. Se um componente não for necessário com base na descrição (ex: usuário já possui), omita-o ou mencione que não é necessário.
+Formate a resposta de forma clara e organizada.`;
 
+            let chatHistory = [{ role: "user", parts: [{ text: fullPrompt }] }];
             const payload = { contents: chatHistory };
-            const apiKey = ""; // A chave da API será fornecida em tempo de execução pelo Canvas.
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            // IMPORTANTE: A chave da API é deixada vazia aqui.
+            // O ambiente Canvas/StudioX irá injetar a chave apropriada em tempo de execução.
+            // NÃO adicione uma chave de API diretamente neste código.
+            const apiKey = ""; 
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
             try {
                 const response = await fetch(apiUrl, {
@@ -716,6 +936,21 @@ Apresente a configuração com os seguintes componentes: Processador, Placa de V
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    console.error('Erro da API Gemini:', errorData);
+                    let errorMessage = `Erro ao gerar sugestão (HTTP ${response.status}).`;
+                    if (errorData.error && errorData.error.message) {
+                        errorMessage += ` Detalhe: ${errorData.error.message}`;
+                    }
+                     if (response.status === 400 && errorData.error?.message.toLowerCase().includes('api key') ) {
+                         errorMessage = 'Erro: A chave da API não é válida ou está ausente. Verifique a configuração.';
+                    } else if (response.status === 429) {
+                        errorMessage = 'Erro: Muitas requisições. Por favor, aguarde e tente novamente mais tarde.';
+                    }
+                    pcAssistantResult.textContent = errorMessage;
+                    return;
+                }
                 const result = await response.json();
 
                 if (result.candidates && result.candidates.length > 0 &&
@@ -724,124 +959,117 @@ Apresente a configuração com os seguintes componentes: Processador, Placa de V
                     const text = result.candidates[0].content.parts[0].text;
                     pcAssistantResult.textContent = text;
                 } else {
-                    pcAssistantResult.textContent = 'Não foi possível gerar uma sugestão. Tente novamente com uma descrição diferente.';
+                    pcAssistantResult.textContent = 'Não foi possível gerar uma sugestão. A resposta da API não continha o texto esperado. Verifique o console para mais detalhes ou tente uma descrição diferente.';
+                    console.log("Resposta inesperada da API:", result);
                 }
             } catch (error) {
                 console.error('Erro ao chamar a API Gemini:', error);
-                pcAssistantResult.textContent = 'Ocorreu um erro ao comunicar com o assistente. Por favor, tente novamente.';
+                pcAssistantResult.textContent = 'Ocorreu um erro ao comunicar com o assistente. Verifique sua conexão ou tente novamente.';
             } finally {
                 pcAssistantLoading.classList.add('hidden');
             }
         }
 
+        // Funções para exibir os produtos nas novas seções
+        function displayFeaturedProducts() {
+            // Lógica para selecionar produtos em destaque (ex: aleatórios ou fixos)
+            const featured = products.sort(() => 0.5 - Math.random()).slice(0, 4); // 4 aleatórios
+            displayProducts(featured, featuredProductsContainer, true); // Habilita animação
+        }
+
+        function displayLatestProducts() {
+            // Pega os 4 produtos com os maiores IDs (assumindo que IDs maiores são mais recentes)
+            const latest = [...products].sort((a,b) => b.id - a.id).slice(0, 4); 
+            displayProducts(latest, latestProductsContainer, true); // Habilita animação
+        }
+
+
         // Ouvintes de Eventos
         window.onload = function() {
-            // Exibir produtos em destaque iniciais (os primeiros 4 produtos)
-            displayProducts(products.slice(0, 4), featuredProductsContainer);
-            // Ocultar a secção "Todos os Produtos" no carregamento inicial para uma homepage mais organizada
-            allProductsSection.classList.add('hidden');
-            featuredSection.classList.remove('hidden');
-            popularCategoriesSection.classList.remove('hidden');
-
-            updateCartDisplay(); // Inicializar exibição do carrinho
+            showMainPageContent();
+            displayFeaturedProducts();
+            displayLatestProducts(); // Exibe novidades
+            updateCartDisplay();
+            setTimeout(handleScrollAnimation, 100); // Anima elementos já visíveis no carregamento
         };
 
-        // Ouvinte de evento para entrada de pesquisa
-        searchInput.addEventListener('keyup', filterProducts);
-        searchInput.addEventListener('change', filterProducts); // Para atualização imediata ao colar/limpar
-
-        // Clique no botão do carrinho para abrir o modal
-        cartButton.addEventListener('click', () => {
-            cartModal.classList.remove('hidden');
+        homeLogo.addEventListener('click', (event) => {
+            event.preventDefault();
+            showMainPageContent();
+            displayFeaturedProducts();
+            displayLatestProducts();
         });
 
-        // Fechar botão do modal do carrinho
-        closeCartModalButton.addEventListener('click', () => {
-            cartModal.classList.add('hidden');
-        });
-
-        // Fechar modal do carrinho ao clicar fora
-        cartModal.addEventListener('click', (event) => {
-            if (event.target === cartModal) {
-                cartModal.classList.add('hidden');
+        searchInput.addEventListener('keyup', (event) => {
+            // Filtra ao pressionar Enter ou se o campo ficar vazio após digitar
+            if (event.key === 'Enter' || searchInput.value.trim() === '') {
+                 filterProducts();
             }
         });
+        // Também filtra na mudança (ex: colar texto, limpar campo)
+        searchInput.addEventListener('change', filterProducts);
 
-        // Acessibilidade do teclado para fechar os modais (tecla Escape)
+
+        cartButton.addEventListener('click', () => cartModal.classList.remove('hidden'));
+        closeCartModalButton.addEventListener('click', () => cartModal.classList.add('hidden'));
+        cartModal.addEventListener('click', (event) => {
+            if (event.target === cartModal) cartModal.classList.add('hidden');
+        });
+
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
-                if (!cartModal.classList.contains('hidden')) {
-                    cartModal.classList.add('hidden');
-                }
-                if (!pcAssistantModal.classList.contains('hidden')) {
-                    pcAssistantModal.classList.add('hidden');
-                }
-                if (!productDetailModal.classList.contains('hidden')) {
-                    productDetailModal.classList.add('hidden');
-                }
+                if (!cartModal.classList.contains('hidden')) cartModal.classList.add('hidden');
+                if (!pcAssistantModal.classList.contains('hidden')) pcAssistantModal.classList.add('hidden');
+                if (!productDetailModal.classList.contains('hidden')) productDetailModal.classList.add('hidden');
             }
         });
 
-        // Ouvintes de Eventos para o Assistente de PC
         pcAssistantButton.addEventListener('click', () => {
             pcAssistantModal.classList.remove('hidden');
-            pcAssistantResult.textContent = ''; // Limpar resultado ao abrir
-            pcAssistantInput.value = ''; // Limpar input ao abrir
+            pcAssistantResult.textContent = '';
+            pcAssistantInput.value = '';
         });
-
-        closePcAssistantModalButton.addEventListener('click', () => {
-            pcAssistantModal.classList.add('hidden');
-        });
-
+        closePcAssistantModalButton.addEventListener('click', () => pcAssistantModal.classList.add('hidden'));
         pcAssistantModal.addEventListener('click', (event) => {
-            if (event.target === pcAssistantModal) {
-                pcAssistantModal.classList.add('hidden');
-            }
+            if (event.target === pcAssistantModal) pcAssistantModal.classList.add('hidden');
         });
-
         generatePcConfigBtn.addEventListener('click', generatePcConfiguration);
 
-        // Ouvintes de Eventos para o Modal de Detalhes do Produto
-        closeProductDetailModalButton.addEventListener('click', () => {
-            productDetailModal.classList.add('hidden');
-        });
-
+        closeProductDetailModalButton.addEventListener('click', () => productDetailModal.classList.add('hidden'));
         productDetailModal.addEventListener('click', (event) => {
-            if (event.target === productDetailModal) {
-                productDetailModal.classList.add('hidden');
-            }
+            if (event.target === productDetailModal) productDetailModal.classList.add('hidden');
         });
-
-        // Event listener para o logo principal (voltar para a homepage completa)
-        homeLogo.addEventListener('click', (event) => {
-            event.preventDefault(); // Evita o comportamento padrão do link
-            featuredSection.classList.remove('hidden');
-            popularCategoriesSection.classList.remove('hidden');
-            allProductsSection.classList.add('hidden'); // Oculta a secção de todos os produtos
-            allProductsTitle.textContent = "Todos os Produtos"; // Reseta o título
-            displayProducts(products, featuredProductsContainer); // Re-exibe os destaques (ou pode exibir todos se preferir)
-            searchInput.value = ''; // Limpa a barra de pesquisa
-        });
-
-
-        // Event listeners para os links de categoria (no header e na secção de categorias populares)
+        
+        // Listeners para links de categoria (header, cards de categoria, botões do carrossel)
         document.querySelectorAll('.category-link').forEach(link => {
             link.addEventListener('click', (event) => {
-                event.preventDefault(); // Evita o comportamento padrão do link
+                event.preventDefault();
                 const category = event.currentTarget.dataset.category;
                 displayCategoryProducts(category);
             });
         });
-        // Event listeners para os cards de categoria populares
-        document.querySelectorAll('.category-card').forEach(card => {
-            card.addEventListener('click', (event) => {
-                event.preventDefault(); // Evita o comportamento padrão do link
-                const category = event.currentTarget.dataset.category;
-                displayCategoryProducts(category);
+        
+        // Listener para botões CTA do Hero Banner que levam para seções ou categorias
+        document.querySelectorAll('.hero-cta-button').forEach(button => {
+            button.addEventListener('click', (event) => {
+                event.preventDefault();
+                const targetSectionId = event.currentTarget.dataset.targetSection;
+                if (targetSectionId === "all-products-section") {
+                    displayCategoryProducts("Todos"); // Mostra todos os produtos
+                } else {
+                    // Se for um link para uma seção específica (não implementado neste exemplo, mas poderia ser)
+                    const targetElement = document.getElementById(targetSectionId);
+                    if (targetElement) {
+                        const headerOffset = document.querySelector('header').offsetHeight || 80;
+                        window.scrollTo({
+                            top: targetElement.offsetTop - headerOffset,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
             });
         });
 
     </script>
 </body>
 </html>
-
