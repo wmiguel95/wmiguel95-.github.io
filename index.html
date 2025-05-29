@@ -75,6 +75,12 @@
             opacity: 1;
             transform: translateY(0);
         }
+        /* Para mensagens de erro nos formulários */
+        .form-error {
+            color: red;
+            font-size: 0.875rem; /* text-sm */
+            margin-top: 0.25rem; /* mt-1 */
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
@@ -98,10 +104,18 @@
             </div>
 
             <nav class="flex items-center space-x-6">
-                <a href="#" class="flex items-center text-gray-300 hover:text-white transition-colors duration-200">
-                    <i class="fas fa-user text-xl mr-2"></i>
-                    <span class="hidden md:inline">Minha Conta</span>
-                </a>
+                <div id="account-actions-container">
+                    <a href="#" id="account-link" class="flex items-center text-gray-300 hover:text-white transition-colors duration-200">
+                        <i class="fas fa-user text-xl mr-2"></i>
+                        <span class="hidden md:inline">Minha Conta</span>
+                    </a>
+                    <div id="user-greeting-container" class="hidden items-center">
+                        <span class="text-gray-300">Olá, <span id="user-name-placeholder" class="font-semibold">Usuário</span>!</span>
+                        <button id="logout-button" class="ml-3 md:ml-4 text-sm text-red-500 hover:text-red-400 transition-colors duration-200 flex items-center">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Sair
+                        </button>
+                    </div>
+                </div>
                 <button id="cart-button" class="relative flex items-center text-gray-300 hover:text-white transition-colors duration-200">
                     <i class="fas fa-shopping-cart text-xl mr-2"></i>
                     <span class="hidden md:inline">Carrinho</span>
@@ -124,7 +138,7 @@
             <section id="hero-banner-section" class="relative w-full h-64 md:h-96 mb-12 rounded-lg overflow-hidden shadow-2xl group">
                 <div id="hero-slides-container" class="relative w-full h-full">
                     <div class="hero-slide absolute inset-0 w-full h-full opacity-100" data-slide-index="0">
-                        <img src="https://sdmntprwestus3.oaiusercontent.com/files/00000000-d5f8-61fd-9167-91358b13b587/raw?se=2025-05-29T16%3A49%3A44Z&sp=r&sv=2024-08-04&sr=b&scid=ebeef2ab-3826-5818-8389-21b003a520c1&skoid=864daabb-d06a-46b3-a747-d35075313a83&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T07%3A52%3A35Z&ske=2025-05-30T07%3A52%3A35Z&sks=b&skv=2024-08-04&sig=DY/PqNreKYlgBWJpDiTv20TqcQ89c%2B3BgqT4PL4LdvQ%3D"
+                        <img src="https://www.adrenaline.com.br/wp-content/uploads/2022/12/Adrena-PC-Ideal-3.jpg"
                              alt="Monte o Seu PC Gaming!"
                              class="absolute inset-0 w-full h-full object-cover"
                              onerror="this.onerror=null;this.src='https://placehold.co/1200x480/111827/FFFFFF?text=PC+Gaming+Dreams'; this.alt='PC Gaming Dreams'">
@@ -138,9 +152,10 @@
                         </div>
                     </div>
                     <div class="hero-slide absolute inset-0 w-full h-full opacity-0" data-slide-index="1">
-                        <img src="https://placehold.co/1200x480/059669/FFFFFF?text=Novas+GPUs+Chegaram!"
-                             alt="Novas Placas de Vídeo"
-                             class="absolute inset-0 w-full h-full object-cover">
+                        <img src="https://epraja.com.br/wp-content/uploads/2023/08/capa-1024x576.png"
+                             alt="Novas Placas de Vídeo em Destaque"
+                             class="absolute inset-0 w-full h-full object-cover"
+                             onerror="this.onerror=null;this.src='https://placehold.co/1200x480/059669/FFFFFF?text=Novas+GPUs+Chegaram!'; this.alt='Novas GPUs Chegaram!'">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
                         <div class="relative z-10 flex flex-col items-center justify-end h-full text-center text-white p-8 md:p-12">
                             <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">Placas de Vídeo de Última Geração</h1>
@@ -151,9 +166,10 @@
                         </div>
                     </div>
                      <div class="hero-slide absolute inset-0 w-full h-full opacity-0" data-slide-index="2">
-                        <img src="https://placehold.co/1200x480/3B82F6/FFFFFF?text=Promo+Periféricos"
-                             alt="Promoção Periféricos"
-                             class="absolute inset-0 w-full h-full object-cover">
+                        <img src="https://m.media-amazon.com/images/I/71lwBCQievL.jpg"
+                             alt="Promoção Periféricos Gamer"
+                             class="absolute inset-0 w-full h-full object-cover"
+                             onerror="this.onerror=null;this.src='https://placehold.co/1200x480/3B82F6/FFFFFF?text=Promo+Periféricos'; this.alt='Promoção Periféricos'">
                         <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/40 to-transparent"></div>
                         <div class="relative z-10 flex flex-col items-center justify-end h-full text-center text-white p-8 md:p-12">
                             <h1 class="text-4xl md:text-5xl font-extrabold mb-4 drop-shadow-lg">Eleve seu Setup com Periféricos!</h1>
@@ -212,18 +228,19 @@
             <section class="mb-12" id="latest-section">
                 <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Novidades da Semana 🔥</h2>
                 <div id="latest-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    </div>
+                </div>
             </section>
+
             <section class="mb-12" id="featured-section">
                 <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Produtos em Destaque ⭐</h2>
                 <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    </div>
+                </div>
             </section>
 
             <section class="mb-8 hidden" id="all-products-section">
                 <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center" id="all-products-title">Todos os Produtos</h2>
                 <div id="all-products-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    </div>
+                </div>
                 <div id="no-results" class="hidden text-center text-gray-600 text-lg mt-8">
                     Nenhum produto encontrado para a sua pesquisa/categoria.
                 </div>
@@ -260,7 +277,7 @@
                     <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-youtube text-xl"></i></a>
                 </div>
             </div>
-             <div>
+            <div>
                 <h3 class="text-lg font-semibold mb-4">Métodos de Pagamento</h3>
                 <div class="flex flex-wrap gap-3 items-center">
                     <i class="fab fa-cc-visa text-3xl text-gray-300" title="Visa"></i>
@@ -270,7 +287,7 @@
                 </div>
                 <p class="text-xs text-gray-500 mt-3">Pagamentos seguros e protegidos.</p>
             </div>
-            </div>
+        </div>
         <div class="text-center text-gray-500 text-sm mt-10 pt-6 border-t border-gray-800">
             &copy; 2025 GadgetX. Todos os direitos reservados.
         </div>
@@ -300,53 +317,76 @@
             </div>
         </div>
     </div>
-
     <div id="pc-assistant-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
-        <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 relative">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">Assistente de Configuração de PC ✨</h2>
-            <button id="close-pc-assistant-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-            <div class="mb-4">
-                <label for="pc-assistant-input" class="block text-gray-700 text-sm font-bold mb-2">
-                    Descreva as suas necessidades (orçamento, uso principal, componentes existentes/preferências):
-                </label>
-                <textarea id="pc-assistant-input" rows="6"
-                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-y"
-                          placeholder="Ex: Orçamento de R$ 5000,00, para jogos (Fortnite, CS2), já tenho um monitor 144Hz."></textarea>
-            </div>
-            <button id="generate-pc-config-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-full btn-primary w-full mb-4">
-                Gerar Sugestão ✨
-            </button>
-            <div id="pc-assistant-loading" class="flex justify-center items-center py-4 hidden">
-                <div class="spinner"></div>
-                <span class="ml-3 text-gray-700">A gerar sugestão...</span>
-            </div>
-            <div id="pc-assistant-result" class="bg-gray-100 p-4 rounded-md max-h-80 overflow-y-auto no-scrollbar whitespace-pre-wrap text-gray-800 text-sm">
-            </div>
         </div>
-    </div>
-
     <div id="product-detail-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
-        <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 relative">
-            <button id="close-product-detail-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-            <div class="flex flex-col md:flex-row gap-6">
-                <div class="md:w-1/2 flex justify-center items-center">
-                    <img id="detail-product-image" src="" alt="Detalhes do Produto" class="w-64 h-64 object-contain rounded-md">
+        </div>
+    <div id="login-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 md:w-1/3 lg:w-1/4 relative">
+            <button id="close-login-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Entrar na Sua Conta</h2>
+            <form id="login-form">
+                <div class="mb-4">
+                    <label for="login-email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="login-email" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-400">
+                    <p id="login-email-error" class="form-error hidden">Por favor, insira um email válido.</p>
                 </div>
-                <div class="md:w-1/2">
-                    <h2 id="detail-product-name" class="text-3xl font-bold text-gray-800 mb-2"></h2>
-                    <p class="text-gray-600 text-sm mb-4">Categoria: <span id="detail-product-category" class="font-semibold"></span></p>
-                    <p id="detail-product-description" class="text-gray-700 mb-6"></p>
-                    <p id="detail-product-price" class="text-4xl font-bold text-red-600 mb-6"></p>
-                    <button id="detail-add-to-cart-btn" class="bg-red-600 text-white font-bold py-3 px-6 rounded-full btn-primary w-full">
-                        Adicionar ao Carrinho
-                    </button>
+                <div class="mb-6">
+                    <label for="login-password" class="block text-gray-700 text-sm font-bold mb-2">Senha:</label>
+                    <input type="password" id="login-password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:ring-2 focus:ring-red-400">
+                    <p id="login-password-error" class="form-error hidden">Senha é obrigatória.</p>
                 </div>
-            </div>
+                <div class="flex items-center justify-between mb-6">
+                    <a href="#" class="inline-block align-baseline font-bold text-sm text-red-500 hover:text-red-700">
+                        Esqueceu a senha?
+                    </a>
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline btn-primary">
+                    Entrar
+                </button>
+            </form>
+            <p class="text-center text-gray-600 text-sm mt-6">
+                Não tem uma conta?
+                <a href="#" id="go-to-register" class="font-bold text-red-500 hover:text-red-700">Crie uma agora!</a>
+            </p>
         </div>
     </div>
-
+    <div id="register-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
+        <div class="bg-white p-8 rounded-lg shadow-xl w-11/12 md:w-1/3 lg:w-1/4 relative">
+            <button id="close-register-modal" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700 text-2xl font-bold">&times;</button>
+            <h2 class="text-2xl font-bold mb-6 text-gray-800 text-center">Crie Sua Conta</h2>
+            <form id="register-form">
+                <div class="mb-4">
+                    <label for="register-name" class="block text-gray-700 text-sm font-bold mb-2">Nome:</label>
+                    <input type="text" id="register-name" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-400">
+                    <p id="register-name-error" class="form-error hidden">Nome é obrigatório.</p>
+                </div>
+                <div class="mb-4">
+                    <label for="register-email" class="block text-gray-700 text-sm font-bold mb-2">Email:</label>
+                    <input type="email" id="register-email" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-400">
+                    <p id="register-email-error" class="form-error hidden">Por favor, insira um email válido.</p>
+                </div>
+                <div class="mb-4">
+                    <label for="register-password" class="block text-gray-700 text-sm font-bold mb-2">Senha:</label>
+                    <input type="password" id="register-password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-400">
+                    <p id="register-password-error" class="form-error hidden">Senha é obrigatória (mínimo 6 caracteres).</p>
+                </div>
+                <div class="mb-6">
+                    <label for="register-confirm-password" class="block text-gray-700 text-sm font-bold mb-2">Confirme a Senha:</label>
+                    <input type="password" id="register-confirm-password" required class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-400">
+                    <p id="register-confirm-password-error" class="form-error hidden">As senhas não coincidem.</p>
+                </div>
+                <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full focus:outline-none focus:shadow-outline btn-primary">
+                    Criar Conta
+                </button>
+            </form>
+            <p class="text-center text-gray-600 text-sm mt-6">
+                Já tem uma conta?
+                <a href="#" id="go-to-login" class="font-bold text-red-500 hover:text-red-700">Entrar</a>
+            </p>
+        </div>
+    </div>
     <script>
-        // Dados de Produtos Mock (COM IMAGEM DO RYZEN 3 4100 ATUALIZADA)
         const products = [
             {
                 id: 1, name: "Processador Intel Core i7-14700K", category: "Processadores", price: 2599.99,
@@ -460,7 +500,7 @@
             },
             {
                 id: 23, name: "NVIDIA GeForce GTX 1650 Super 4GB", category: "Placas de Vídeo", price: 999.90,
-                image: "https://placehold.co/300x300/76B900/FFFFFF?text=GTX+1650S",
+                image: "https://asset.msi.com/resize/image/global/product/product_10_20191029131030_5db7c9c6b9a7a.png62405b38c58fe0f07fcef2367d8a9ba1/1024.png",
                 description: "Ótima para jogos em 1080p com bom desempenho em títulos populares e eSports. Excelente custo-benefício para gamers de entrada."
             },
             {
@@ -551,19 +591,21 @@
         ];
 
         let cart = [];
+        let isLoggedIn = false; 
+        let loggedInUser = null; 
 
-        // Obter elementos do DOM
         const homeLogo = document.getElementById('home-logo');
         const featuredProductsContainer = document.getElementById('featured-products');
-        const latestProductsContainer = document.getElementById('latest-products'); // Novo container
+        const latestProductsContainer = document.getElementById('latest-products'); 
         const allProductsSection = document.getElementById('all-products-section');
         const featuredSection = document.getElementById('featured-section');
-        const latestSection = document.getElementById('latest-section'); // Nova seção
+        const latestSection = document.getElementById('latest-section'); 
         const popularCategoriesSection = document.getElementById('popular-categories-section');
-        const heroBannerSection = document.getElementById('hero-banner-section'); // Seção do banner principal
+        const heroBannerSection = document.getElementById('hero-banner-section'); 
         const allProductsTitle = document.getElementById('all-products-title');
         const allProductsContainer = document.getElementById('all-products-container');
         const searchInput = document.getElementById('search-input');
+        
         const cartButton = document.getElementById('cart-button');
         const cartModal = document.getElementById('cart-modal');
         const closeCartModalButton = document.getElementById('close-cart-modal');
@@ -571,7 +613,7 @@
         const cartTotalSpan = document.getElementById('cart-total');
         const cartCountSpan = document.getElementById('cart-count');
         const emptyCartMessage = document.getElementById('empty-cart-message');
-        const cartPaymentMethodsDiv = document.getElementById('cart-payment-methods'); // Div de pagamentos no carrinho
+        const cartPaymentMethodsDiv = document.getElementById('cart-payment-methods'); 
         const noResultsMessage = document.getElementById('no-results');
 
         const pcAssistantButton = document.getElementById('pc-assistant-button');
@@ -591,7 +633,33 @@
         const detailProductPrice = document.getElementById('detail-product-price');
         const detailAddToCartBtn = document.getElementById('detail-add-to-cart-btn');
 
-        // INÍCIO: Lógica do Carrossel de Banners
+        const accountLink = document.getElementById('account-link');
+        const userGreetingContainer = document.getElementById('user-greeting-container');
+        const userNamePlaceholder = document.getElementById('user-name-placeholder');
+        const logoutButton = document.getElementById('logout-button');
+
+        const loginModal = document.getElementById('login-modal');
+        const closeLoginModalButton = document.getElementById('close-login-modal');
+        const loginForm = document.getElementById('login-form');
+        const loginEmailInput = document.getElementById('login-email');
+        const loginPasswordInput = document.getElementById('login-password');
+        const goToRegisterLink = document.getElementById('go-to-register');
+        const loginEmailError = document.getElementById('login-email-error');
+        const loginPasswordError = document.getElementById('login-password-error');
+
+        const registerModal = document.getElementById('register-modal');
+        const closeRegisterModalButton = document.getElementById('close-register-modal');
+        const registerForm = document.getElementById('register-form');
+        const registerNameInput = document.getElementById('register-name');
+        const registerEmailInput = document.getElementById('register-email');
+        const registerPasswordInput = document.getElementById('register-password');
+        const registerConfirmPasswordInput = document.getElementById('register-confirm-password');
+        const goToLoginLink = document.getElementById('go-to-login');
+        const registerNameError = document.getElementById('register-name-error');
+        const registerEmailError = document.getElementById('register-email-error');
+        const registerPasswordError = document.getElementById('register-password-error');
+        const registerConfirmPasswordError = document.getElementById('register-confirm-password-error');
+
         const heroSlidesContainer = document.getElementById('hero-slides-container');
         const heroSlides = Array.from(heroSlidesContainer.children);
         const heroPrevButton = document.getElementById('hero-prev');
@@ -609,6 +677,7 @@
         }
 
         function updateHeroDots() {
+            if (!heroDotsContainer) return;
             heroDotsContainer.innerHTML = '';
             heroSlides.forEach((_, index) => {
                 const dot = document.createElement('button');
@@ -638,7 +707,7 @@
         }
 
         function startHeroInterval() {
-            heroInterval = setInterval(nextHeroSlide, 7000); // Muda a cada 7 segundos
+            heroInterval = setInterval(nextHeroSlide, 7000); 
         }
 
         function resetHeroInterval() {
@@ -646,7 +715,7 @@
             startHeroInterval();
         }
 
-        if (heroPrevButton && heroNextButton && heroSlides.length > 0) {
+        if (heroSlidesContainer && heroPrevButton && heroNextButton && heroSlides.length > 0) {
             heroPrevButton.addEventListener('click', () => {
                 prevHeroSlide();
                 resetHeroInterval();
@@ -655,34 +724,23 @@
                 nextHeroSlide();
                 resetHeroInterval();
             });
-            updateHeroSlides(); // Inicializa
-            startHeroInterval(); // Inicia auto-play
+            updateHeroSlides(); 
+            startHeroInterval(); 
         }
-        // FIM: Lógica do Carrossel de Banners
-
-
-        // INÍCIO: Lógica para Animação de Scroll
+        
         const handleScrollAnimation = () => {
             const elementsToAnimate = document.querySelectorAll('.animate-on-scroll');
             elementsToAnimate.forEach((el) => {
                 const elementTop = el.getBoundingClientRect().top;
                 const elementBottom = el.getBoundingClientRect().bottom;
-                // Verifica se o elemento está parcialmente na viewport
                 if (elementTop < window.innerHeight && elementBottom > 0) {
                     el.classList.add('is-visible');
-                } else {
-                    // Opcional: remover a classe para re-animar quando sair e entrar novamente
-                    // el.classList.remove('is-visible');
-                }
+                } 
             });
         };
-
         window.addEventListener('scroll', handleScrollAnimation);
-        // FIM: Lógica para Animação de Scroll
-
-
+        
         function renderProductCard(product, applyScrollAnim = false) {
-            // Adiciona a classe 'animate-on-scroll' se applyScrollAnim for true
             const scrollClass = applyScrollAnim ? ' animate-on-scroll' : '';
             return `
                 <div class="product-card bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center${scrollClass}" data-product-id="${product.id}">
@@ -713,9 +771,8 @@
                     openProductDetailModal(productId);
                 });
             });
-            // Após renderizar, checa animações de scroll para elementos já visíveis
             if(applyScrollAnim) {
-                 setTimeout(handleScrollAnimation, 50); // Pequeno delay para garantir renderização
+                 setTimeout(handleScrollAnimation, 50); 
             }
         }
 
@@ -756,10 +813,10 @@
 
             if (cart.length === 0) {
                 emptyCartMessage.classList.remove('hidden');
-                cartPaymentMethodsDiv.classList.add('hidden'); // Esconde métodos de pagamento se carrinho vazio
+                if(cartPaymentMethodsDiv) cartPaymentMethodsDiv.classList.add('hidden'); 
             } else {
                 emptyCartMessage.classList.add('hidden');
-                cartPaymentMethodsDiv.classList.remove('hidden'); // Mostra métodos de pagamento
+                if(cartPaymentMethodsDiv) cartPaymentMethodsDiv.classList.remove('hidden'); 
                 cart.forEach(item => {
                     const itemTotal = item.price * item.quantity;
                     total += itemTotal;
@@ -800,7 +857,6 @@
                 });
                 cartItemsContainer.querySelectorAll('.remove-from-cart-btn').forEach(button => {
                     button.addEventListener('click', (event) => {
-                        // Corrigido para obter o ID do botão e não do ícone interno
                         const id = parseInt(event.currentTarget.dataset.id);
                         removeFromCart(id);
                     });
@@ -809,34 +865,33 @@
             cartTotalSpan.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
             cartCountSpan.textContent = totalItems;
         }
-
+        
         function showMainPageContent() {
-            featuredSection.classList.remove('hidden');
-            latestSection.classList.remove('hidden'); // Mostra novidades
-            popularCategoriesSection.classList.remove('hidden');
-            heroBannerSection.classList.remove('hidden'); // Mostra banner
-            allProductsSection.classList.add('hidden');
+            if(featuredSection) featuredSection.classList.remove('hidden');
+            if(latestSection) latestSection.classList.remove('hidden'); 
+            if(popularCategoriesSection) popularCategoriesSection.classList.remove('hidden');
+            if(heroBannerSection) heroBannerSection.classList.remove('hidden'); 
+            if(allProductsSection) allProductsSection.classList.add('hidden');
             searchInput.value = '';
-            document.documentElement.scrollTop = 0; // Volta ao topo
+            document.documentElement.scrollTop = 0; 
         }
         
         function showAllProductsView(title, productList) {
-            featuredSection.classList.add('hidden');
-            latestSection.classList.add('hidden');
-            popularCategoriesSection.classList.add('hidden');
-            heroBannerSection.classList.add('hidden'); // Esconde banner
-            allProductsSection.classList.remove('hidden');
+            if(featuredSection) featuredSection.classList.add('hidden');
+            if(latestSection) latestSection.classList.add('hidden');
+            if(popularCategoriesSection) popularCategoriesSection.classList.add('hidden');
+            if(heroBannerSection) heroBannerSection.classList.add('hidden'); 
+            if(allProductsSection) allProductsSection.classList.remove('hidden');
             allProductsTitle.textContent = title;
 
             if (productList.length > 0) {
-                displayProducts(productList, allProductsContainer, true); // Habilita animação de scroll
+                displayProducts(productList, allProductsContainer, true); 
                 noResultsMessage.classList.add('hidden');
             } else {
                 allProductsContainer.innerHTML = '';
                 noResultsMessage.classList.remove('hidden');
                 noResultsMessage.textContent = `Nenhum produto encontrado para "${title.replace('Resultados da Pesquisa para "', '').replace('Produtos: ', '').replace('"', '')}".`;
             }
-            // Rola para a seção de produtos, menos um offset para o header fixo
             const headerOffset = document.querySelector('header').offsetHeight || 80;
             window.scrollTo({
                 top: allProductsSection.offsetTop - headerOffset,
@@ -844,23 +899,33 @@
             });
         }
 
-
         function filterProducts() {
             const searchTerm = searchInput.value.toLowerCase().trim();
-            if (!searchTerm) { // Se a pesquisa estiver vazia, volta para a home
+            if (!searchTerm) {
                 showMainPageContent();
-                displayFeaturedProducts(); 
-                displayLatestProducts(); 
+                displayFeaturedProducts();
+                displayLatestProducts();
                 return;
             }
+
             const filtered = products.filter(product =>
                 product.name.toLowerCase().includes(searchTerm) ||
                 product.description.toLowerCase().includes(searchTerm) ||
                 product.category.toLowerCase().includes(searchTerm)
             );
+
+            if (filtered.length === 1 && filtered[0].name.toLowerCase() === searchTerm) {
+                openProductDetailModal(filtered[0].id);
+                if(allProductsSection && !allProductsSection.classList.contains('hidden')){
+                    allProductsSection.classList.add('hidden');
+                    showMainPageContent();
+                    displayFeaturedProducts();
+                    displayLatestProducts();
+                }
+                return; 
+            }
             showAllProductsView(`Resultados da Pesquisa para "${searchInput.value}"`, filtered);
         }
-
 
         function displayCategoryProducts(categoryName) {
             let filteredProducts;
@@ -896,7 +961,7 @@
         }
 
         async function generatePcConfiguration() {
-            const promptText = pcAssistantInput.value.trim();
+             const promptText = pcAssistantInput.value.trim();
             if (!promptText) {
                 pcAssistantResult.textContent = 'Por favor, descreva as suas necessidades para o PC.';
                 return;
@@ -924,9 +989,6 @@ Formate a resposta de forma clara e organizada.`;
 
             let chatHistory = [{ role: "user", parts: [{ text: fullPrompt }] }];
             const payload = { contents: chatHistory };
-            // IMPORTANTE: A chave da API é deixada vazia aqui.
-            // O ambiente Canvas/StudioX irá injetar a chave apropriada em tempo de execução.
-            // NÃO adicione uma chave de API diretamente neste código.
             const apiKey = ""; 
             const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${apiKey}`;
 
@@ -970,27 +1032,159 @@ Formate a resposta de forma clara e organizada.`;
             }
         }
 
-        // Funções para exibir os produtos nas novas seções
         function displayFeaturedProducts() {
-            // Lógica para selecionar produtos em destaque (ex: aleatórios ou fixos)
-            const featured = products.sort(() => 0.5 - Math.random()).slice(0, 4); // 4 aleatórios
-            displayProducts(featured, featuredProductsContainer, true); // Habilita animação
+            const featured = products.sort(() => 0.5 - Math.random()).slice(0, 4); 
+            displayProducts(featured, featuredProductsContainer, true); 
         }
 
         function displayLatestProducts() {
-            // Pega os 4 produtos com os maiores IDs (assumindo que IDs maiores são mais recentes)
             const latest = [...products].sort((a,b) => b.id - a.id).slice(0, 4); 
-            displayProducts(latest, latestProductsContainer, true); // Habilita animação
+            displayProducts(latest, latestProductsContainer, true); 
+        }
+
+        function updateLoginStateDisplay() {
+            if (isLoggedIn && loggedInUser) {
+                accountLink.classList.add('hidden');
+                userGreetingContainer.classList.remove('hidden');
+                userGreetingContainer.classList.add('flex'); 
+                userNamePlaceholder.textContent = loggedInUser.name;
+            } else {
+                accountLink.classList.remove('hidden');
+                userGreetingContainer.classList.add('hidden');
+                userGreetingContainer.classList.remove('flex');
+            }
+        }
+
+        function validateEmail(email) {
+            const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            return re.test(String(email).toLowerCase());
+        }
+        
+        function showError(element, message) {
+            element.textContent = message;
+            element.classList.remove('hidden');
+        }
+
+        function clearError(element) {
+            element.textContent = '';
+            element.classList.add('hidden');
+        }
+        
+        function clearAllFormErrors() {
+            [loginEmailError, loginPasswordError, registerNameError, registerEmailError, registerPasswordError, registerConfirmPasswordError].forEach(clearError);
         }
 
 
-        // Ouvintes de Eventos
+        loginForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            clearAllFormErrors();
+            let isValid = true;
+
+            const email = loginEmailInput.value.trim();
+            const password = loginPasswordInput.value.trim();
+
+            if (!validateEmail(email)) {
+                showError(loginEmailError, 'Por favor, insira um email válido.');
+                isValid = false;
+            }
+            if (password === '') {
+                showError(loginPasswordError, 'Senha é obrigatória.');
+                isValid = false;
+            }
+
+            if (isValid) {
+                alert(`Login simulado com sucesso para ${email}! (Funcionalidade de backend não implementada)`);
+                isLoggedIn = true;
+                loggedInUser = { name: email.split('@')[0], email: email }; 
+                updateLoginStateDisplay();
+                loginModal.classList.add('hidden');
+                loginForm.reset();
+            }
+        });
+
+        registerForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            clearAllFormErrors();
+            let isValid = true;
+
+            const name = registerNameInput.value.trim();
+            const email = registerEmailInput.value.trim();
+            const password = registerPasswordInput.value;
+            const confirmPassword = registerConfirmPasswordInput.value;
+
+            if (name === '') {
+                showError(registerNameError, 'Nome é obrigatório.');
+                isValid = false;
+            }
+            if (!validateEmail(email)) {
+                showError(registerEmailError, 'Por favor, insira um email válido.');
+                isValid = false;
+            }
+            if (password.length < 6) {
+                showError(registerPasswordError, 'Senha deve ter no mínimo 6 caracteres.');
+                isValid = false;
+            }
+            if (password !== confirmPassword) {
+                showError(registerConfirmPasswordError, 'As senhas não coincidem.');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                alert(`Conta criada com sucesso para ${name}! (Funcionalidade de backend não implementada)`);
+                isLoggedIn = true;
+                loggedInUser = { name: name, email: email };
+                updateLoginStateDisplay();
+                registerModal.classList.add('hidden');
+                registerForm.reset();
+            }
+        });
+
+        accountLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (!isLoggedIn) {
+                clearAllFormErrors();
+                loginModal.classList.remove('hidden');
+            }
+        });
+
+        logoutButton.addEventListener('click', () => {
+            isLoggedIn = false;
+            loggedInUser = null;
+            updateLoginStateDisplay();
+            alert('Você foi desconectado.');
+        });
+
+        closeLoginModalButton.addEventListener('click', () => loginModal.classList.add('hidden'));
+        loginModal.addEventListener('click', (event) => {
+            if (event.target === loginModal) loginModal.classList.add('hidden');
+        });
+
+        closeRegisterModalButton.addEventListener('click', () => registerModal.classList.add('hidden'));
+        registerModal.addEventListener('click', (event) => {
+            if (event.target === registerModal) registerModal.classList.add('hidden');
+        });
+
+        goToRegisterLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            loginModal.classList.add('hidden');
+            clearAllFormErrors();
+            registerModal.classList.remove('hidden');
+        });
+
+        goToLoginLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            registerModal.classList.add('hidden');
+            clearAllFormErrors();
+            loginModal.classList.remove('hidden');
+        });
+
         window.onload = function() {
             showMainPageContent();
             displayFeaturedProducts();
-            displayLatestProducts(); // Exibe novidades
+            displayLatestProducts(); 
             updateCartDisplay();
-            setTimeout(handleScrollAnimation, 100); // Anima elementos já visíveis no carregamento
+            updateLoginStateDisplay(); 
+            setTimeout(handleScrollAnimation, 100); 
         };
 
         homeLogo.addEventListener('click', (event) => {
@@ -1001,14 +1195,11 @@ Formate a resposta de forma clara e organizada.`;
         });
 
         searchInput.addEventListener('keyup', (event) => {
-            // Filtra ao pressionar Enter ou se o campo ficar vazio após digitar
             if (event.key === 'Enter' || searchInput.value.trim() === '') {
                  filterProducts();
             }
         });
-        // Também filtra na mudança (ex: colar texto, limpar campo)
         searchInput.addEventListener('change', filterProducts);
-
 
         cartButton.addEventListener('click', () => cartModal.classList.remove('hidden'));
         closeCartModalButton.addEventListener('click', () => cartModal.classList.add('hidden'));
@@ -1019,28 +1210,41 @@ Formate a resposta de forma clara e organizada.`;
         document.addEventListener('keydown', (event) => {
             if (event.key === 'Escape') {
                 if (!cartModal.classList.contains('hidden')) cartModal.classList.add('hidden');
-                if (!pcAssistantModal.classList.contains('hidden')) pcAssistantModal.classList.add('hidden');
-                if (!productDetailModal.classList.contains('hidden')) productDetailModal.classList.add('hidden');
+                if (pcAssistantModal && !pcAssistantModal.classList.contains('hidden')) pcAssistantModal.classList.add('hidden');
+                if (productDetailModal && !productDetailModal.classList.contains('hidden')) productDetailModal.classList.add('hidden');
+                if (!loginModal.classList.contains('hidden')) loginModal.classList.add('hidden');
+                if (!registerModal.classList.contains('hidden')) registerModal.classList.add('hidden');
             }
         });
 
-        pcAssistantButton.addEventListener('click', () => {
-            pcAssistantModal.classList.remove('hidden');
-            pcAssistantResult.textContent = '';
-            pcAssistantInput.value = '';
-        });
-        closePcAssistantModalButton.addEventListener('click', () => pcAssistantModal.classList.add('hidden'));
-        pcAssistantModal.addEventListener('click', (event) => {
-            if (event.target === pcAssistantModal) pcAssistantModal.classList.add('hidden');
-        });
-        generatePcConfigBtn.addEventListener('click', generatePcConfiguration);
-
-        closeProductDetailModalButton.addEventListener('click', () => productDetailModal.classList.add('hidden'));
-        productDetailModal.addEventListener('click', (event) => {
-            if (event.target === productDetailModal) productDetailModal.classList.add('hidden');
-        });
+        if(pcAssistantButton) {
+            pcAssistantButton.addEventListener('click', () => {
+                pcAssistantModal.classList.remove('hidden');
+                pcAssistantResult.textContent = '';
+                pcAssistantInput.value = '';
+            });
+        }
+        if(closePcAssistantModalButton) {
+            closePcAssistantModalButton.addEventListener('click', () => pcAssistantModal.classList.add('hidden'));
+        }
+        if(pcAssistantModal) {
+            pcAssistantModal.addEventListener('click', (event) => {
+                if (event.target === pcAssistantModal) pcAssistantModal.classList.add('hidden');
+            });
+        }
+        if(generatePcConfigBtn) {
+            generatePcConfigBtn.addEventListener('click', generatePcConfiguration);
+        }
         
-        // Listeners para links de categoria (header, cards de categoria, botões do carrossel)
+        if(closeProductDetailModalButton){
+            closeProductDetailModalButton.addEventListener('click', () => productDetailModal.classList.add('hidden'));
+        }
+        if(productDetailModal){
+            productDetailModal.addEventListener('click', (event) => {
+                if (event.target === productDetailModal) productDetailModal.classList.add('hidden');
+            });
+        }
+        
         document.querySelectorAll('.category-link').forEach(link => {
             link.addEventListener('click', (event) => {
                 event.preventDefault();
@@ -1049,15 +1253,13 @@ Formate a resposta de forma clara e organizada.`;
             });
         });
         
-        // Listener para botões CTA do Hero Banner que levam para seções ou categorias
         document.querySelectorAll('.hero-cta-button').forEach(button => {
             button.addEventListener('click', (event) => {
                 event.preventDefault();
                 const targetSectionId = event.currentTarget.dataset.targetSection;
                 if (targetSectionId === "all-products-section") {
-                    displayCategoryProducts("Todos"); // Mostra todos os produtos
+                    displayCategoryProducts("Todos"); 
                 } else {
-                    // Se for um link para uma seção específica (não implementado neste exemplo, mas poderia ser)
                     const targetElement = document.getElementById(targetSectionId);
                     if (targetElement) {
                         const headerOffset = document.querySelector('header').offsetHeight || 80;
