@@ -1,1 +1,847 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GadgetX - Sua Loja de Hardware</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6; /* Fundo cinza claro */
+        }
+        /* Barra de rolagem personalizada para melhor estética */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #e0e0e0;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+        /* Estilos personalizados para efeitos de hover dos botões */
+        .btn-primary {
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #ef4444; /* Vermelho mais escuro no hover */
+            transform: translateY(-2px);
+        }
+        .product-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            cursor: pointer; /* Indica que o card é clicável */
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        .category-card {
+            transition: transform 0.2s ease-in-out;
+            cursor: pointer; /* Indica que o card é clicável */
+        }
+        .category-card:hover {
+            transform: scale(1.03);
+        }
+        /* Overlay do modal */
+        .modal-overlay {
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+        /* Ocultar barra de rolagem para elementos específicos, mas geralmente evitar por acessibilidade */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;  /* IE e Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+        /* Estilo para o spinner de carregamento */
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-left-color: #ef4444;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+
+    <header class="bg-gray-900 text-white p-4 shadow-md sticky top-0 z-50">
+        <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
+            <a href="#" class="mb-4 md:mb-0 flex items-center" id="home-logo">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdExMGGQ4doX1rx39Tbs0pR5bAM1aAalCeGw&s" 
+                     alt="GadgetX Logo" 
+                     class="h-8 md:h-10 mr-2"
+                     onerror="this.onerror=null;this.src='https://placehold.co/100x40/FF0000/FFFFFF?text=GadgetX'; this.alt='GadgetX Texto'">
+                <span class="text-3xl font-bold text-red-500">GadgetX</span>
+            </a>
+
+            <div class="flex-grow mx-0 md:mx-8 w-full md:w-auto mb-4 md:mb-0">
+                <div class="relative">
+                    <input type="text" id="search-input" placeholder="O que está a procurar?"
+                           class="w-full py-2 pl-10 pr-4 rounded-full bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <nav class="flex items-center space-x-6">
+                <a href="#" class="flex items-center text-gray-300 hover:text-white transition-colors duration-200">
+                    <i class="fas fa-user text-xl mr-2"></i>
+                    <span class="hidden md:inline">Minha Conta</span>
+                </a>
+                <button id="cart-button" class="relative flex items-center text-gray-300 hover:text-white transition-colors duration-200">
+                    <i class="fas fa-shopping-cart text-xl mr-2"></i>
+                    <span class="hidden md:inline">Carrinho</span>
+                    <span id="cart-count" class="absolute -top-2 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">0</span>
+                </button>
+            </nav>
+        </div>
+        <nav id="main-category-nav" class="container mx-auto mt-4 hidden md:flex justify-center space-x-8 text-lg">
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Processadores">Processadores</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Placas de Vídeo">Placas de Vídeo</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Memórias RAM">Memórias RAM</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Placas-Mãe">Placas-Mãe</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Armazenamento">Armazenamento</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Gabinetes">Gabinetes</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Fontes">Fontes</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Periféricos">Periféricos</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Monitores">Monitores</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Mouses">Mouses</a>
+        </nav>
+    </header>
+
+    <main class="flex-grow">
+        <div class="max-w-screen-xl mx-auto px-4 py-8">
+            <section class="mb-8 rounded-lg overflow-hidden shadow-lg">
+                <div class="relative bg-gradient-to-r from-red-600 to-red-800 h-64 md:h-96 flex items-center justify-center">
+                    <img src="https://sdmntprwestus3.oaiusercontent.com/files/00000000-d5f8-61fd-9167-91358b13b587/raw?se=2025-05-29T16%3A49%3A44Z&sp=r&sv=2024-08-04&sr=b&scid=ebeef2ab-3826-5818-8389-21b003a520c1&skoid=864daabb-d06a-46b3-a747-d35075313a83&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2025-05-29T07%3A52%3A35Z&ske=2025-05-30T07%3A52%3A35Z&sks=b&skv=2024-08-04&sig=DY/PqNreKYlgBWJpDiTv20TqcQ89c%2B3BgqT4PL4LdvQ%3D" 
+                         alt="Monte o Seu PC Gaming! e Mais" 
+                         class="absolute inset-0 w-full h-full object-cover opacity-100"
+                         onerror="this.onerror=null;this.src='https://placehold.co/1200x400/000000/FFFFFF?text=SUPER+OFERTA!+Até+50%25+OFF'; this.alt='Super Oferta'">
+                    <div class="relative z-10 text-center text-white p-4">
+                        <h1 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">Monte o Seu PC Gaming!</h1>
+                        <p class="text-lg md:text-2xl mb-6">As melhores peças com os menores preços. Aproveite!</p>
+                        <button class="bg-white text-red-600 font-bold py-3 px-8 rounded-full shadow-lg hover:bg-gray-200 transform hover:scale-105 transition duration-300">
+                            Ver Ofertas
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-8 text-center">
+                <button id="pc-assistant-button" class="bg-blue-600 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:bg-blue-700 transform hover:scale-105 transition duration-300 btn-primary">
+                    Assistente de Configuração de PC ✨
+                </button>
+            </section>
+
+            <section class="mb-8" id="popular-categories-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Categorias Populares</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Processadores">
+                        <i class="fas fa-microchip text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Processadores</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Placas de Vídeo">
+                        <i class="fas fa-desktop text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Placas de Vídeo</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Memórias RAM">
+                        <i class="fas fa-memory text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Memórias RAM</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Armazenamento">
+                        <i class="fas fa-hdd text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Armazenamento</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Fontes">
+                        <i class="fas fa-power-off text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Fontes</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Periféricos">
+                        <i class="fas fa-keyboard text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Periféricos</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Monitores">
+                        <i class="fas fa-tv text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Monitores</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Gabinetes">
+                        <i class="fas fa-box-open text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Gabinetes</span>
+                    </a>
+                    <a href="#" class="category-card bg-white p-4 rounded-lg shadow-md text-center hover:bg-gray-50 flex flex-col items-center justify-center h-32" data-category="Mouses">
+                        <i class="fas fa-mouse text-4xl text-red-500 mb-2"></i>
+                        <span class="font-semibold text-gray-700">Mouses</span>
+                    </a>
+                </div>
+            </section>
+
+            <section class="mb-8" id="featured-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center">Produtos em Destaque</h2>
+                <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    </div>
+            </section>
+
+            <section class="mb-8 hidden" id="all-products-section">
+                <h2 class="text-3xl font-bold text-gray-800 mb-6 text-center" id="all-products-title">Todos os Produtos</h2>
+                <div id="all-products-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    </div>
+                <div id="no-results" class="hidden text-center text-gray-600 text-lg mt-8">
+                    Nenhum produto encontrado para a sua pesquisa/categoria.
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900 text-white p-6 mt-8">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-xl font-bold text-red-500 mb-4">GadgetX</h3>
+                <p class="text-gray-400 text-sm">A sua loja online de hardware e informática. As melhores marcas e os menores preços do mercado.</p>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Institucional</h3>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">Sobre Nós</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">Política de Privacidade</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">Política de Trocas e Devoluções</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">Termos de Uso</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Atendimento</h3>
+                <ul class="space-y-2 text-gray-400 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">Fale Conosco</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">Os Meus Pedidos</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors duration-200">FAQ</a></li>
+                </ul>
+                <div class="flex space-x-4 mt-4">
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-facebook-f text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-instagram text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-twitter text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200"><i class="fab fa-youtube text-xl"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="text-center text-gray-500 text-sm mt-8 pt-4 border-t border-gray-800">
+            &copy; 2025 GadgetX. Todos os direitos reservados.
+        </div>
+    </footer>
+
+    <div id="cart-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 relative">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">O Seu Carrinho</h2>
+            <button id="close-cart-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <div id="cart-items" class="max-h-80 overflow-y-auto pr-2 no-scrollbar">
+                <p id="empty-cart-message" class="text-gray-600">O seu carrinho está vazio.</p>
+            </div>
+            <div class="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center">
+                <span class="text-xl font-bold text-gray-800">Total: <span id="cart-total">R$ 0,00</span></span>
+                <button class="bg-red-600 text-white font-bold py-3 px-6 rounded-full btn-primary">
+                    Finalizar Compra
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pc-assistant-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 relative">
+            <h2 class="text-2xl font-bold mb-4 text-gray-800">Assistente de Configuração de PC ✨</h2>
+            <button id="close-pc-assistant-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+
+            <div class="mb-4">
+                <label for="pc-assistant-input" class="block text-gray-700 text-sm font-bold mb-2">
+                    Descreva as suas necessidades (orçamento, uso principal, componentes existentes/preferências):
+                </label>
+                <textarea id="pc-assistant-input" rows="6"
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline resize-y"
+                          placeholder="Ex: Orçamento de R$ 5000,00, para jogos (Fortnite, CS2), já tenho um monitor 144Hz.">
+                </textarea>
+            </div>
+
+            <button id="generate-pc-config-btn" class="bg-green-600 text-white font-bold py-2 px-4 rounded-full btn-primary w-full mb-4">
+                Gerar Sugestão ✨
+            </button>
+
+            <div id="pc-assistant-loading" class="flex justify-center items-center py-4 hidden">
+                <div class="spinner"></div>
+                <span class="ml-3 text-gray-700">A gerar sugestão...</span>
+            </div>
+
+            <div id="pc-assistant-result" class="bg-gray-100 p-4 rounded-md max-h-80 overflow-y-auto no-scrollbar whitespace-pre-wrap text-gray-800 text-sm">
+                </div>
+        </div>
+    </div>
+
+    <div id="product-detail-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
+        <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-2/3 lg:w-1/2 relative">
+            <button id="close-product-detail-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
+            <div class="flex flex-col md:flex-row gap-6">
+                <div class="md:w-1/2 flex justify-center items-center">
+                    <img id="detail-product-image" src="" alt="Detalhes do Produto" class="w-64 h-64 object-contain rounded-md">
+                </div>
+                <div class="md:w-1/2">
+                    <h2 id="detail-product-name" class="text-3xl font-bold text-gray-800 mb-2"></h2>
+                    <p class="text-gray-600 text-sm mb-4">Categoria: <span id="detail-product-category" class="font-semibold"></span></p>
+                    <p id="detail-product-description" class="text-gray-700 mb-6"></p>
+                    <p id="detail-product-price" class="text-4xl font-bold text-red-600 mb-6"></p>
+                    <button id="detail-add-to-cart-btn" class="bg-red-600 text-white font-bold py-3 px-6 rounded-full btn-primary w-full">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Dados de Produtos Mock
+        const products = [
+            {
+                id: 1,
+                name: "Processador Intel Core i7-14700K",
+                category: "Processadores",
+                price: 2599.99,
+                image: "https://images.tcdn.com.br/img/img_prod/313499/90_processador_intel_core_i7_12700_2_1ghz_4_9ghz_turbo_12a_geracao_12_cores_20_threads_lga_1700_com_coo_17271_1_90904782757814888e3f75cc41cdc5d0.jpg",
+                description: "O Intel Core i7-14700K é um processador de última geração, ideal para gamers e criadores de conteúdo que exigem alta performance. Com 20 núcleos (8 P-cores + 12 E-cores) e 28 threads, oferece uma capacidade de multitarefas excecional e velocidades de clock elevadas para os jogos mais recentes e aplicações exigentes. Possui cache Intel Smart Cache de 33MB e TDP de 125W."
+            },
+            {
+                id: 2,
+                name: "Placa de Vídeo NVIDIA GeForce RTX 4080",
+                category: "Placas de Vídeo",
+                price: 8999.99,
+                image: "https://allnations.com.br/images/thumbs/1852913_625.jpeg",
+                description: "A NVIDIA GeForce RTX 4080 oferece desempenho ultra para gamers e criadores. Equipada com a arquitetura NVIDIA Ada Lovelace, ray tracing de terceira geração e Tensor Cores de quarta geração, proporciona gráficos hiper-realistas e taxas de frames elevadas. Ideal para jogos em 4K e trabalho profissional."
+            },
+            {
+                id: 3,
+                name: "Memória RAM DDR5 32GB (2x16GB) 6000MHz Corsair Vengeance RGB",
+                category: "Memórias RAM",
+                price: 799.99,
+                image: "https://placehold.co/300x300/0000FF/FFFFFF?text=DDR5+32GB",
+                description: "As memórias Corsair Vengeance RGB DDR5 oferecem desempenho de ponta e iluminação RGB dinâmica. Com 32GB (2x16GB) e 6000MHz, garantem alta velocidade e capacidade para os sistemas mais recentes, otimizando jogos e aplicações pesadas."
+            },
+            {
+                id: 4,
+                name: "SSD NVMe M.2 2TB Samsung 990 Pro",
+                category: "Armazenamento",
+                price: 1299.99,
+                image: "https://placehold.co/300x300/FFFF00/000000?text=SSD+2TB",
+                description: "O Samsung 990 Pro é um SSD NVMe M.2 de 2TB que oferece velocidades de leitura/escrita sequenciais excecionais, atingindo até 7450 MB/s e 6900 MB/s, respetivamente. É a escolha perfeita para carregamento instantâneo de jogos, edição de vídeo 8K e manipulação de grandes volumes de dados."
+            },
+            {
+                id: 5,
+                name: "Placa-Mãe ASUS ROG Strix Z790-E Gaming WiFi",
+                category: "Placas-Mãe",
+                price: 2199.99,
+                image: "https://placehold.co/300x300/FF00FF/FFFFFF?text=Z790-E",
+                description: "A ASUS ROG Strix Z790-E Gaming WiFi é uma placa-mãe premium projetada para processadores Intel de 12ª, 13ª e 14ª gerações. Suporta DDR5, PCIe 5.0 e oferece conectividade WiFi 6E, garantindo desempenho máximo e estabilidade para os setups mais exigentes."
+            },
+            {
+                id: 6,
+                name: "Gabinete Gaming Cooler Master HAF 700 EVO",
+                category: "Gabinetes",
+                price: 1599.99,
+                image: "https://placehold.co/300x300/00FFFF/000000?text=Gabinete",
+                description: "O Cooler Master HAF 700 EVO é um gabinete full-tower que se destaca pelo design arrojado e fluxo de ar inigualável. Compatível com os maiores componentes, oferece espaço para múltiplos radiadores e um sistema de cablagem otimizado, ideal para construções de alta performance."
+            },
+            {
+                id: 7,
+                name: "Fonte de Alimentação Corsair RM850e 850W 80 Plus Gold",
+                category: "Fontes",
+                price: 699.99,
+                image: "https://placehold.co/300x300/800080/FFFFFF?text=Fonte+850W",
+                description: "A Corsair RM850e é uma fonte de alimentação totalmente modular de 850W, certificada com 80 Plus Gold, garantindo alta eficiência e baixo ruído. Perfeita para alimentar sistemas gaming de alta performance com fiabilidade e controlo de temperatura."
+            },
+            {
+                id: 8,
+                name: "Monitor Gaming Alienware AW2725DF 27'' QD-OLED 360Hz",
+                category: "Monitores",
+                price: 4999.99,
+                image: "https://placehold.co/300x300/FFA500/FFFFFF?text=Monitor+360Hz",
+                description: "O Alienware AW2725DF é um monitor gaming de 27 polegadas com tecnologia QD-OLED, oferecendo cores vibrantes, pretos perfeitos e um contraste infinito. Com uma taxa de atualização de 360Hz e tempo de resposta de 0.03ms, proporciona uma experiência de jogo ultra-fluida e imersiva."
+            },
+            {
+                id: 9,
+                name: "Teclado Mecânico HyperX Alloy Origins Core RGB",
+                category: "Periféricos",
+                price: 499.99,
+                image: "https://placehold.co/300x300/A0A0A0/FFFFFF?text=Teclado",
+                description: "O HyperX Alloy Origins Core RGB é um teclado mecânico compacto e robusto, ideal para gamers. Com switches mecânicos HyperX, iluminação RGB personalizável por tecla e um design portátil, oferece precisão e estilo para qualquer setup."
+            },
+            {
+                id: 10,
+                name: "Mouse Gaming Logitech G502 X LIGHTSPEED",
+                category: "Mouses",
+                price: 399.99,
+                image: "https://placehold.co/300x300/B0C4DE/000000?text=Mouse",
+                description: "O Logitech G502 X LIGHTSPEED é um mouse gaming sem fios de alta performance, equipado com o sensor HERO 25K para precisão excecional e tecnologia LIGHTSPEED para latência ultra-baixa. Com 13 botões programáveis e um design confortável, é perfeito para jogos intensos."
+            },
+            // Novos Processadores Adicionados
+            {
+                id: 11,
+                name: "Processador AMD Ryzen 7 7800X3D",
+                category: "Processadores",
+                price: 2499.99,
+                image: "https://placehold.co/300x300/AF0F0F/FFFFFF?text=Ryzen+7+7800X3D",
+                description: "O AMD Ryzen 7 7800X3D é um processador gaming de alto nível, com a tecnologia 3D V-Cache para um desempenho excecional em jogos. Com 8 núcleos e 16 threads, oferece uma experiência de jogo fluida e responsiva, sendo uma das melhores opções para gamers."
+            },
+            {
+                id: 12,
+                name: "Processador Intel Core i5-13600K",
+                category: "Processadores",
+                price: 1799.99,
+                image: "https://placehold.co/300x300/0071C5/FFFFFF?text=Intel+i5-13600K",
+                description: "O Intel Core i5-13600K oferece um excelente equilíbrio entre preço e performance para jogos e produtividade. Com 14 núcleos (6 P-cores + 8 E-cores) e 20 threads, é uma escolha sólida para quem busca um upgrade potente sem gastar muito."
+            },
+            {
+                id: 13,
+                name: "Processador AMD Ryzen 5 7600X",
+                category: "Processadores",
+                price: 1399.99,
+                image: "https://placehold.co/300x300/AF0F0F/FFFFFF?text=Ryzen+5+7600X",
+                description: "O AMD Ryzen 5 7600X é um processador de 6 núcleos e 12 threads, ideal para builds gaming de gama média-alta. Com arquitetura Zen 4 e suporte a DDR5 e PCIe 5.0, oferece um desempenho robusto para os jogos atuais e futuras aplicações."
+            }
+        ];
+
+        let cart = []; // Array global para armazenar os itens do carrinho
+
+        // Obter elementos do DOM
+        const homeLogo = document.getElementById('home-logo');
+        const featuredProductsContainer = document.getElementById('featured-products');
+        const allProductsSection = document.getElementById('all-products-section');
+        const featuredSection = document.getElementById('featured-section');
+        const popularCategoriesSection = document.getElementById('popular-categories-section');
+        const allProductsTitle = document.getElementById('all-products-title');
+        const allProductsContainer = document.getElementById('all-products-container');
+        const searchInput = document.getElementById('search-input');
+        const cartButton = document.getElementById('cart-button');
+        const cartModal = document.getElementById('cart-modal');
+        const closeCartModalButton = document.getElementById('close-cart-modal');
+        const cartItemsContainer = document.getElementById('cart-items');
+        const cartTotalSpan = document.getElementById('cart-total');
+        const cartCountSpan = document.getElementById('cart-count');
+        const emptyCartMessage = document.getElementById('empty-cart-message');
+        const noResultsMessage = document.getElementById('no-results');
+
+        // Elementos do Assistente de PC
+        const pcAssistantButton = document.getElementById('pc-assistant-button');
+        const pcAssistantModal = document.getElementById('pc-assistant-modal');
+        const closePcAssistantModalButton = document.getElementById('close-pc-assistant-modal');
+        const pcAssistantInput = document.getElementById('pc-assistant-input');
+        const generatePcConfigBtn = document.getElementById('generate-pc-config-btn');
+        const pcAssistantLoading = document.getElementById('pc-assistant-loading');
+        const pcAssistantResult = document.getElementById('pc-assistant-result');
+
+        // Elementos do Modal de Detalhes do Produto
+        const productDetailModal = document.getElementById('product-detail-modal');
+        const closeProductDetailModalButton = document.getElementById('close-product-detail-modal');
+        const detailProductImage = document.getElementById('detail-product-image');
+        const detailProductName = document.getElementById('detail-product-name');
+        const detailProductCategory = document.getElementById('detail-product-category');
+        const detailProductDescription = document.getElementById('detail-product-description');
+        const detailProductPrice = document.getElementById('detail-product-price');
+        const detailAddToCartBtn = document.getElementById('detail-add-to-cart-btn');
+
+        /**
+         * Renderiza um único cartão de produto.
+         * @param {Object} product - O objeto produto.
+         * @returns {string} - A string HTML para o cartão do produto.
+         */
+        function renderProductCard(product) {
+            return `
+                <div class="product-card bg-white p-4 rounded-lg shadow-md flex flex-col items-center text-center" data-product-id="${product.id}">
+                    <img src="${product.image}" alt="${product.name}" class="w-48 h-48 object-contain mb-4 rounded-md">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-2">${product.name}</h3>
+                    <p class="text-gray-600 text-sm mb-2">${product.description.substring(0, 70)}...</p>
+                    <p class="text-2xl font-bold text-red-600 mb-4">R$ ${product.price.toFixed(2).replace('.', ',')}</p>
+                    <button class="add-to-cart-btn bg-red-600 text-white font-bold py-2 px-4 rounded-full btn-primary w-full"
+                            data-product-id="${product.id}">
+                        Adicionar ao Carrinho
+                    </button>
+                </div>
+            `;
+        }
+
+        /**
+         * Exibe os produtos num dado contentor.
+         * @param {Array} productList - Array de objetos produto.
+         * @param {HTMLElement} container - O elemento DOM para renderizar os produtos.
+         */
+        function displayProducts(productList, container) {
+            container.innerHTML = productList.map(renderProductCard).join('');
+            // Anexar ouvintes de eventos a TODOS os botões "Adicionar ao Carrinho"
+            container.querySelectorAll('.add-to-cart-btn').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    event.stopPropagation(); // Previne que o clique no botão abra o modal de detalhes
+                    const productId = parseInt(event.currentTarget.dataset.productId);
+                    addToCart(productId);
+                });
+            });
+            // Anexar ouvintes de eventos para abrir o modal de detalhes do produto ao clicar no card
+            container.querySelectorAll('.product-card').forEach(card => {
+                card.addEventListener('click', (event) => {
+                    const productId = parseInt(event.currentTarget.dataset.productId);
+                    openProductDetailModal(productId);
+                });
+            });
+        }
+
+        /**
+         * Adiciona um produto ao carrinho.
+         * @param {number} productId - O ID do produto a adicionar.
+         */
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const existingItem = cart.find(item => item.id === productId);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({ ...product, quantity: 1 });
+                }
+                updateCartDisplay();
+            }
+        }
+
+        /**
+         * Remove um produto do carrinho.
+         * @param {number} productId - O ID do produto a remover.
+         */
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.id !== productId);
+            updateCartDisplay();
+        }
+
+        /**
+         * Atualiza a quantidade de um produto no carrinho.
+         * @param {number} productId - O ID do produto.
+         * @param {number} newQuantity - A nova quantidade.
+         */
+        function updateCartQuantity(productId, newQuantity) {
+            const item = cart.find(item => item.id === productId);
+            if (item) {
+                if (newQuantity <= 0) {
+                    removeFromCart(productId);
+                } else {
+                    item.quantity = newQuantity;
+                }
+                updateCartDisplay();
+            }
+        }
+
+        /**
+         * Atualiza a exibição do carrinho (itens, total, contagem).
+         */
+        function updateCartDisplay() {
+            cartItemsContainer.innerHTML = ''; // Limpar itens existentes
+            let total = 0;
+            let totalItems = 0;
+
+            if (cart.length === 0) {
+                emptyCartMessage.classList.remove('hidden');
+            } else {
+                emptyCartMessage.classList.add('hidden');
+                cart.forEach(item => {
+                    const itemTotal = item.price * item.quantity;
+                    total += itemTotal;
+                    totalItems += item.quantity;
+
+                    const cartItemDiv = document.createElement('div');
+                    cartItemDiv.className = 'flex items-center justify-between p-3 border-b border-gray-200 last:border-b-0';
+                    cartItemDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-contain rounded-md mr-4">
+                            <div>
+                                <h4 class="font-semibold text-gray-800">${item.name}</h4>
+                                <p class="text-sm text-gray-600">R$ ${item.price.toFixed(2).replace('.', ',')}</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <button class="quantity-btn bg-gray-200 text-gray-700 px-2 py-1 rounded-md hover:bg-gray-300" data-id="${item.id}" data-action="decrease">-</button>
+                            <span class="text-gray-800 font-medium">${item.quantity}</span>
+                            <button class="quantity-btn bg-gray-200 text-gray-700 px-2 py-1 rounded-md hover:bg-gray-300" data-id="${item.id}" data-action="increase">+</button>
+                            <button class="remove-from-cart-btn text-red-500 hover:text-red-700" data-id="${item.id}">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(cartItemDiv);
+                });
+
+                // Adicionar ouvintes de eventos para botões de quantidade e remover
+                cartItemsContainer.querySelectorAll('.quantity-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const id = parseInt(event.currentTarget.dataset.id);
+                        const action = event.currentTarget.dataset.action;
+                        const item = cart.find(i => i.id === id);
+                        if (item) {
+                            if (action === 'increase') {
+                                updateCartQuantity(id, item.quantity + 1);
+                            } else if (action === 'decrease') {
+                                updateCartQuantity(id, item.quantity - 1);
+                            }
+                        }
+                    });
+                });
+
+                cartItemsContainer.querySelectorAll('.remove-from-cart-btn').forEach(button => {
+                    button.addEventListener('click', (event) => {
+                        const id = parseInt(event.currentTarget.dataset.id);
+                        removeFromCart(id);
+                    });
+                });
+            }
+
+            cartTotalSpan.textContent = `R$ ${total.toFixed(2).replace('.', ',')}`;
+            cartCountSpan.textContent = totalItems;
+        }
+
+        /**
+         * Filtra os produtos com base na entrada de pesquisa.
+         */
+        function filterProducts() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filtered = products.filter(product =>
+                product.name.toLowerCase().includes(searchTerm) ||
+                product.description.toLowerCase().includes(searchTerm) ||
+                product.category.toLowerCase().includes(searchTerm)
+            );
+
+            // Esconder secções da homepage e exibir a secção "Todos os Produtos"
+            featuredSection.classList.add('hidden');
+            popularCategoriesSection.classList.add('hidden');
+            allProductsSection.classList.remove('hidden');
+
+            allProductsTitle.textContent = `Resultados da Pesquisa para "${searchInput.value}"`;
+
+            if (filtered.length > 0) {
+                displayProducts(filtered, allProductsContainer);
+                noResultsMessage.classList.add('hidden');
+            } else {
+                allProductsContainer.innerHTML = '';
+                noResultsMessage.classList.remove('hidden');
+            }
+        }
+
+        /**
+         * Exibe produtos de uma categoria específica.
+         * @param {string} categoryName - O nome da categoria a ser exibida.
+         */
+        function displayCategoryProducts(categoryName) {
+            let filteredProducts;
+            if (categoryName === "Todos") {
+                filteredProducts = products;
+                allProductsTitle.textContent = "Todos os Produtos";
+            } else {
+                filteredProducts = products.filter(product => product.category === categoryName);
+                allProductsTitle.textContent = `Produtos: ${categoryName}`;
+            }
+
+            // Esconder secções da homepage e exibir a secção "Todos os Produtos"
+            featuredSection.classList.add('hidden');
+            popularCategoriesSection.classList.add('hidden');
+            allProductsSection.classList.remove('hidden');
+
+
+            if (filteredProducts.length > 0) {
+                displayProducts(filteredProducts, allProductsContainer);
+                noResultsMessage.classList.add('hidden');
+            } else {
+                allProductsContainer.innerHTML = '';
+                noResultsMessage.classList.remove('hidden');
+                noResultsMessage.textContent = `Nenhum produto encontrado na categoria "${categoryName}".`;
+            }
+        }
+
+        /**
+         * Abre o modal de detalhes do produto com as informações do produto.
+         * @param {number} productId - O ID do produto a ser exibido.
+         */
+        function openProductDetailModal(productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                detailProductImage.src = product.image;
+                detailProductName.textContent = product.name;
+                detailProductCategory.textContent = product.category;
+                detailProductDescription.textContent = product.description;
+                detailProductPrice.textContent = `R$ ${product.price.toFixed(2).replace('.', ',')}`;
+                detailAddToCartBtn.onclick = () => { // Adicionar o evento de adicionar ao carrinho no modal
+                    addToCart(product.id);
+                    productDetailModal.classList.add('hidden'); // Fecha o modal após adicionar
+                };
+                productDetailModal.classList.remove('hidden');
+            }
+        }
+
+        /**
+         * Gera uma sugestão de configuração de PC usando a API Gemini.
+         */
+        async function generatePcConfiguration() {
+            const promptText = pcAssistantInput.value.trim();
+            if (!promptText) {
+                pcAssistantResult.textContent = 'Por favor, descreva as suas necessidades para o PC.';
+                return;
+            }
+
+            pcAssistantLoading.classList.remove('hidden');
+            pcAssistantResult.textContent = ''; // Limpar resultados anteriores
+
+            const fullPrompt = `Crie uma configuração de PC com base nas seguintes necessidades:
+${promptText}
+Apresente a configuração com os seguintes componentes: Processador, Placa de Vídeo, Placa-Mãe, Memória RAM, Armazenamento, Fonte e Gabinete. Inclua uma breve justificativa para cada escolha e o preço estimado de cada componente (se possível, use valores realistas para o mercado brasileiro, mesmo que sejam fictícios). Formate a resposta de forma clara, com títulos para cada componente e justificativas.`;
+
+            let chatHistory = [];
+            chatHistory.push({ role: "user", parts: [{ text: fullPrompt }] });
+
+            const payload = { contents: chatHistory };
+            const apiKey = ""; // A chave da API será fornecida em tempo de execução pelo Canvas.
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    pcAssistantResult.textContent = text;
+                } else {
+                    pcAssistantResult.textContent = 'Não foi possível gerar uma sugestão. Tente novamente com uma descrição diferente.';
+                }
+            } catch (error) {
+                console.error('Erro ao chamar a API Gemini:', error);
+                pcAssistantResult.textContent = 'Ocorreu um erro ao comunicar com o assistente. Por favor, tente novamente.';
+            } finally {
+                pcAssistantLoading.classList.add('hidden');
+            }
+        }
+
+        // Ouvintes de Eventos
+        window.onload = function() {
+            // Exibir produtos em destaque iniciais (os primeiros 4 produtos)
+            displayProducts(products.slice(0, 4), featuredProductsContainer);
+            // Ocultar a secção "Todos os Produtos" no carregamento inicial para uma homepage mais organizada
+            allProductsSection.classList.add('hidden');
+            featuredSection.classList.remove('hidden');
+            popularCategoriesSection.classList.remove('hidden');
+
+            updateCartDisplay(); // Inicializar exibição do carrinho
+        };
+
+        // Ouvinte de evento para entrada de pesquisa
+        searchInput.addEventListener('keyup', filterProducts);
+        searchInput.addEventListener('change', filterProducts); // Para atualização imediata ao colar/limpar
+
+        // Clique no botão do carrinho para abrir o modal
+        cartButton.addEventListener('click', () => {
+            cartModal.classList.remove('hidden');
+        });
+
+        // Fechar botão do modal do carrinho
+        closeCartModalButton.addEventListener('click', () => {
+            cartModal.classList.add('hidden');
+        });
+
+        // Fechar modal do carrinho ao clicar fora
+        cartModal.addEventListener('click', (event) => {
+            if (event.target === cartModal) {
+                cartModal.classList.add('hidden');
+            }
+        });
+
+        // Acessibilidade do teclado para fechar os modais (tecla Escape)
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                if (!cartModal.classList.contains('hidden')) {
+                    cartModal.classList.add('hidden');
+                }
+                if (!pcAssistantModal.classList.contains('hidden')) {
+                    pcAssistantModal.classList.add('hidden');
+                }
+                if (!productDetailModal.classList.contains('hidden')) {
+                    productDetailModal.classList.add('hidden');
+                }
+            }
+        });
+
+        // Ouvintes de Eventos para o Assistente de PC
+        pcAssistantButton.addEventListener('click', () => {
+            pcAssistantModal.classList.remove('hidden');
+            pcAssistantResult.textContent = ''; // Limpar resultado ao abrir
+            pcAssistantInput.value = ''; // Limpar input ao abrir
+        });
+
+        closePcAssistantModalButton.addEventListener('click', () => {
+            pcAssistantModal.classList.add('hidden');
+        });
+
+        pcAssistantModal.addEventListener('click', (event) => {
+            if (event.target === pcAssistantModal) {
+                pcAssistantModal.classList.add('hidden');
+            }
+        });
+
+        generatePcConfigBtn.addEventListener('click', generatePcConfiguration);
+
+        // Ouvintes de Eventos para o Modal de Detalhes do Produto
+        closeProductDetailModalButton.addEventListener('click', () => {
+            productDetailModal.classList.add('hidden');
+        });
+
+        productDetailModal.addEventListener('click', (event) => {
+            if (event.target === productDetailModal) {
+                productDetailModal.classList.add('hidden');
+            }
+        });
+
+        // Event listener para o logo principal (voltar para a homepage completa)
+        homeLogo.addEventListener('click', (event) => {
+            event.preventDefault(); // Evita o comportamento padrão do link
+            featuredSection.classList.remove('hidden');
+            popularCategoriesSection.classList.remove('hidden');
+            allProductsSection.classList.add('hidden'); // Oculta a secção de todos os produtos
+            allProductsTitle.textContent = "Todos os Produtos"; // Reseta o título
+            displayProducts(products, featuredProductsContainer); // Re-exibe os destaques (ou pode exibir todos se preferir)
+            searchInput.value = ''; // Limpa a barra de pesquisa
+        });
+
+
+        // Event listeners para os links de categoria (no header e na secção de categorias populares)
+        document.querySelectorAll('.category-link').forEach(link => {
+            link.addEventListener('click', (event) => {
+                event.preventDefault(); // Evita o comportamento padrão do link
+                const category = event.currentTarget.dataset.category;
+                displayCategoryProducts(category);
+            });
+        });
+        // Event listeners para os cards de categoria populares
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('click', (event) => {
+                event.preventDefault(); // Evita o comportamento padrão do link
+                const category = event.currentTarget.dataset.category;
+                displayCategoryProducts(category);
+            });
+        });
+
+    </script>
+</body>
+</html>
 
