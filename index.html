@@ -81,30 +81,39 @@
             font-size: 0.875rem; /* text-sm */
             margin-top: 0.25rem; /* mt-1 */
         }
+        /* Estilo para o menu mobile ativo */
+        #mobile-menu.active {
+            transform: translateX(0);
+        }
     </style>
 </head>
 <body class="flex flex-col min-h-screen">
 
     <header class="bg-gray-900 text-white p-4 shadow-md sticky top-0 z-50">
         <div class="container mx-auto flex flex-col md:flex-row items-center justify-between">
-            <a href="#" class="mb-4 md:mb-0 flex items-center" id="home-logo">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdExMGGQ4doX1rx39Tbs0pR5bAM1aAalCeGw&s"
-                     alt="GadgetX Logo"
-                     class="h-8 md:h-10 mr-2"
-                     onerror="this.onerror=null;this.src='https://placehold.co/100x40/FF0000/FFFFFF?text=GadgetX'; this.alt='GadgetX Texto'">
-                <span class="text-3xl font-bold text-red-500">GadgetX</span>
-            </a>
+            <div class="flex items-center justify-between w-full md:w-auto">
+                <a href="#" class="mb-0 flex items-center" id="home-logo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRdExMGGQ4doX1rx39Tbs0pR5bAM1aAalCeGw&s"
+                         alt="GadgetX Logo"
+                         class="h-8 md:h-10 mr-2"
+                         onerror="this.onerror=null;this.src='https://placehold.co/100x40/FF0000/FFFFFF?text=GadgetX'; this.alt='GadgetX Texto'">
+                    <span class="text-3xl font-bold text-red-500">GadgetX</span>
+                </a>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-gray-300 hover:text-white focus:outline-none p-2">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+                </div>
 
-            <div class="flex-grow mx-0 md:mx-8 w-full md:w-auto mb-4 md:mb-0">
-                <div class="relative">
+            <div class="flex-grow mx-0 md:mx-8 w-full md:w-auto mb-4 md:mb-0 mt-4 md:mt-0 hidden md:block"> <div class="relative">
                     <input type="text" id="search-input" placeholder="O que está a procurar?"
                            class="w-full py-2 pl-10 pr-4 rounded-full bg-gray-800 text-white focus:outline-none focus:ring-2 focus:ring-red-500">
                     <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
             </div>
 
-            <nav class="flex items-center space-x-6">
-                <div id="account-actions-container">
+            <nav class="flex items-center space-x-6 hidden md:flex"> <div id="account-actions-container">
                     <a href="#" id="account-link" class="flex items-center text-gray-300 hover:text-white transition-colors duration-200">
                         <i class="fas fa-user text-xl mr-2"></i>
                         <span class="hidden md:inline">Minha Conta</span>
@@ -130,9 +139,43 @@
             <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Placas-Mãe">Placas-Mãe</a>
             <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Armazenamento">Armazenamento</a>
             <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Gabinetes">Gabinetes</a>
+             <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Fontes">Fontes</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Periféricos">Periféricos</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Monitores">Monitores</a>
+            <a href="#" class="text-gray-300 hover:text-white transition-colors duration-200 category-link" data-category="Mouses">Mouses</a>
         </nav>
     </header>
 
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-60 hidden"></div>
+    <div id="mobile-menu"
+         class="fixed top-0 left-0 h-full w-3/4 max-w-xs bg-gray-900 text-white p-6 transform -translate-x-full transition-transform duration-300 ease-in-out z-70 overflow-y-auto shadow-2xl">
+        <div class="flex justify-between items-center mb-8">
+            <span class="text-2xl font-bold text-red-500">Categorias</span>
+            <button id="close-mobile-menu-button" class="text-gray-400 hover:text-white text-3xl">&times;</button>
+        </div>
+        <nav class="flex flex-col space-y-4 text-lg">
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Processadores">Processadores</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Placas de Vídeo">Placas de Vídeo</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Memórias RAM">Memórias RAM</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Placas-Mãe">Placas-Mãe</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Armazenamento">Armazenamento</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Gabinetes">Gabinetes</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Fontes">Fontes</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Periféricos">Periféricos</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Monitores">Monitores</a>
+            <a href="#" class="py-2 px-3 rounded-md hover:bg-gray-700 category-link" data-category="Mouses">Mouses</a>
+            <hr class="border-gray-700 my-4">
+            <a href="#" id="mobile-account-link" class="py-2 px-3 rounded-md hover:bg-gray-700 flex items-center">
+                <i class="fas fa-user mr-3"></i>Minha Conta
+            </a>
+             <div id="mobile-user-greeting-container" class="hidden items-center py-2 px-3">
+                <span class="text-gray-300">Olá, <span id="mobile-user-name-placeholder" class="font-semibold">Usuário</span>!</span>
+             </div>
+            <button id="mobile-logout-button" class="hidden py-2 px-3 rounded-md hover:bg-gray-700 text-left text-red-500 flex items-center">
+                 <i class="fas fa-sign-out-alt mr-3"></i>Sair
+            </button>
+        </nav>
+    </div>
     <main class="flex-grow">
         <div class="max-w-screen-xl mx-auto px-4 py-8">
             <section id="hero-banner-section" class="relative w-full h-64 md:h-96 mb-12 rounded-lg overflow-hidden shadow-2xl group">
@@ -294,29 +337,7 @@
     </footer>
 
     <div id="cart-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
-        <div class="bg-white p-6 rounded-lg shadow-xl w-11/12 md:w-1/2 lg:w-1/3 relative">
-            <h2 class="text-2xl font-bold mb-4 text-gray-800">O Seu Carrinho</h2>
-            <button id="close-cart-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold">&times;</button>
-            <div id="cart-items" class="max-h-80 overflow-y-auto pr-2 no-scrollbar">
-                <p id="empty-cart-message" class="text-gray-600">O seu carrinho está vazio.</p>
-            </div>
-            <div id="cart-payment-methods" class="mt-6 pt-4 border-t border-gray-200 text-center hidden">
-                <p class="text-sm text-gray-700 mb-2 font-medium">Aceitamos:</p>
-                <div class="flex justify-center space-x-4 items-center">
-                    <i class="fab fa-cc-visa text-2xl text-gray-500"></i>
-                    <i class="fab fa-cc-mastercard text-2xl text-gray-500"></i>
-                    <span class="bg-gray-200 px-2 py-0.5 rounded text-xs font-semibold text-gray-600" title="Pix">PIX</span>
-                    <i class="fas fa-barcode text-2xl text-gray-500"></i>
-                </div>
-            </div>
-            <div class="mt-6 pt-4 border-t border-gray-200 flex justify-between items-center">
-                <span class="text-xl font-bold text-gray-800">Total: <span id="cart-total">R$ 0,00</span></span>
-                <button class="bg-red-600 text-white font-bold py-3 px-6 rounded-full btn-primary">
-                    Finalizar Compra
-                </button>
-            </div>
         </div>
-    </div>
     <div id="pc-assistant-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
         </div>
     <div id="product-detail-modal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 hidden modal-overlay">
@@ -637,6 +658,16 @@
         const userGreetingContainer = document.getElementById('user-greeting-container');
         const userNamePlaceholder = document.getElementById('user-name-placeholder');
         const logoutButton = document.getElementById('logout-button');
+        
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const closeMobileMenuButton = document.getElementById('close-mobile-menu-button');
+        const mobileAccountLink = document.getElementById('mobile-account-link');
+        const mobileUserGreetingContainer = document.getElementById('mobile-user-greeting-container');
+        const mobileUserNamePlaceholder = document.getElementById('mobile-user-name-placeholder');
+        const mobileLogoutButton = document.getElementById('mobile-logout-button');
+
 
         const loginModal = document.getElementById('login-modal');
         const closeLoginModalButton = document.getElementById('close-login-modal');
@@ -938,6 +969,12 @@
                 title = `Produtos: ${categoryName}`;
             }
             showAllProductsView(title, filteredProducts);
+            // Fecha o menu mobile se estiver aberto após clicar em uma categoria
+            if (mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                mobileMenu.classList.add('-translate-x-full');
+                mobileMenuOverlay.classList.add('hidden');
+            }
         }
 
         function openProductDetailModal(productId) {
@@ -1048,10 +1085,27 @@ Formate a resposta de forma clara e organizada.`;
                 userGreetingContainer.classList.remove('hidden');
                 userGreetingContainer.classList.add('flex'); 
                 userNamePlaceholder.textContent = loggedInUser.name;
+                
+                // Mobile menu login state
+                mobileAccountLink.classList.add('hidden');
+                mobileUserGreetingContainer.classList.remove('hidden');
+                mobileUserGreetingContainer.classList.add('flex');
+                mobileUserNamePlaceholder.textContent = loggedInUser.name;
+                mobileLogoutButton.classList.remove('hidden');
+                mobileLogoutButton.classList.add('flex');
+
+
             } else {
                 accountLink.classList.remove('hidden');
                 userGreetingContainer.classList.add('hidden');
                 userGreetingContainer.classList.remove('flex');
+
+                // Mobile menu logout state
+                mobileAccountLink.classList.remove('hidden');
+                mobileUserGreetingContainer.classList.add('hidden');
+                mobileUserGreetingContainer.classList.remove('flex');
+                mobileLogoutButton.classList.add('hidden');
+                mobileLogoutButton.classList.remove('flex');
             }
         }
 
@@ -1139,6 +1193,19 @@ Formate a resposta de forma clara e organizada.`;
             }
         });
 
+        function handleLogout() {
+            isLoggedIn = false;
+            loggedInUser = null;
+            updateLoginStateDisplay();
+            alert('Você foi desconectado.');
+             // Se o menu mobile estiver aberto, feche-o
+            if (mobileMenu.classList.contains('active')) {
+                mobileMenu.classList.remove('active');
+                mobileMenu.classList.add('-translate-x-full');
+                mobileMenuOverlay.classList.add('hidden');
+            }
+        }
+
         accountLink.addEventListener('click', (event) => {
             event.preventDefault();
             if (!isLoggedIn) {
@@ -1146,13 +1213,22 @@ Formate a resposta de forma clara e organizada.`;
                 loginModal.classList.remove('hidden');
             }
         });
-
-        logoutButton.addEventListener('click', () => {
-            isLoggedIn = false;
-            loggedInUser = null;
-            updateLoginStateDisplay();
-            alert('Você foi desconectado.');
+        mobileAccountLink.addEventListener('click', (event) => {
+            event.preventDefault();
+            if (!isLoggedIn) {
+                clearAllFormErrors();
+                loginModal.classList.remove('hidden');
+                // Fechar menu mobile ao abrir modal de login
+                mobileMenu.classList.remove('active');
+                mobileMenu.classList.add('-translate-x-full');
+                mobileMenuOverlay.classList.add('hidden');
+            }
         });
+
+
+        logoutButton.addEventListener('click', handleLogout);
+        mobileLogoutButton.addEventListener('click', handleLogout);
+
 
         closeLoginModalButton.addEventListener('click', () => loginModal.classList.add('hidden'));
         loginModal.addEventListener('click', (event) => {
@@ -1177,6 +1253,36 @@ Formate a resposta de forma clara e organizada.`;
             clearAllFormErrors();
             loginModal.classList.remove('hidden');
         });
+
+        // INÍCIO: Lógica do Menu Mobile
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            mobileMenu.classList.remove('-translate-x-full');
+            mobileMenuOverlay.classList.remove('hidden');
+        });
+
+        closeMobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileMenu.classList.add('-translate-x-full');
+            mobileMenuOverlay.classList.add('hidden');
+        });
+        
+        mobileMenuOverlay.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+            mobileMenu.classList.add('-translate-x-full');
+            mobileMenuOverlay.classList.add('hidden');
+        });
+
+        // Adicionar listener para fechar menu mobile ao clicar em um link de categoria DENTRO do menu mobile
+        mobileMenu.querySelectorAll('.category-link').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('active');
+                mobileMenu.classList.add('-translate-x-full');
+                mobileMenuOverlay.classList.add('hidden');
+            });
+        });
+        // FIM: Lógica do Menu Mobile
+
 
         window.onload = function() {
             showMainPageContent();
@@ -1214,18 +1320,26 @@ Formate a resposta de forma clara e organizada.`;
                 if (productDetailModal && !productDetailModal.classList.contains('hidden')) productDetailModal.classList.add('hidden');
                 if (!loginModal.classList.contains('hidden')) loginModal.classList.add('hidden');
                 if (!registerModal.classList.contains('hidden')) registerModal.classList.add('hidden');
+                // Fechar menu mobile com Esc também
+                if (mobileMenu.classList.contains('active')) {
+                    mobileMenu.classList.remove('active');
+                    mobileMenu.classList.add('-translate-x-full');
+                    mobileMenuOverlay.classList.add('hidden');
+                }
             }
         });
 
         if(pcAssistantButton) {
             pcAssistantButton.addEventListener('click', () => {
-                pcAssistantModal.classList.remove('hidden');
-                pcAssistantResult.textContent = '';
-                pcAssistantInput.value = '';
+                if(pcAssistantModal) pcAssistantModal.classList.remove('hidden');
+                if(pcAssistantResult) pcAssistantResult.textContent = '';
+                if(pcAssistantInput) pcAssistantInput.value = '';
             });
         }
         if(closePcAssistantModalButton) {
-            closePcAssistantModalButton.addEventListener('click', () => pcAssistantModal.classList.add('hidden'));
+            closePcAssistantModalButton.addEventListener('click', () => { 
+                if(pcAssistantModal) pcAssistantModal.classList.add('hidden');
+            });
         }
         if(pcAssistantModal) {
             pcAssistantModal.addEventListener('click', (event) => {
@@ -1237,7 +1351,9 @@ Formate a resposta de forma clara e organizada.`;
         }
         
         if(closeProductDetailModalButton){
-            closeProductDetailModalButton.addEventListener('click', () => productDetailModal.classList.add('hidden'));
+            closeProductDetailModalButton.addEventListener('click', () => {
+                if(productDetailModal) productDetailModal.classList.add('hidden');
+            });
         }
         if(productDetailModal){
             productDetailModal.addEventListener('click', (event) => {
@@ -1275,3 +1391,4 @@ Formate a resposta de forma clara e organizada.`;
     </script>
 </body>
 </html>
+
